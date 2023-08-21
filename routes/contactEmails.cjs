@@ -11,7 +11,6 @@ router.post("/emails", async (req, res) => {
             email: req.body.email,
             message: req.body.message
         });
-
         const email = await newEmail.save();
         res.send(email);
     }
@@ -20,31 +19,45 @@ router.post("/emails", async (req, res) => {
     }
 })
 
+//get Emails
 router.get("/getEmails", (req, res) => {
-    
-    Email.find().then((err, emails) => {
-        if (!err) {
+    try {
+        Email.find().then((emails) => {
             res.send(emails);
-        }
-        else {
-            res.send(err);
-        }
-    })
+        });
+    }
+    catch (err) {
+        res.send(err);
+    }
 
 })
 
+//get one Email
+
 router.get("/getEmails/:id", (req, res) => {
     const emailId = req.params.id;
-
-    Email.findById(emailId).then((err, email) =>{
-        if (!err) {
+    try {
+        Email.findById(emailId).then((email) => {
             res.send(email);
-        }
-        else {
-            res.send(err);
-        }
+        });
+    }
+    catch (err) {
+        res.send(err);
+    }
+})
 
-      });
+
+//delete one email 
+router.delete('/getEmails/:id', function (req, res) {
+    const emailId = req.params.id;
+    try {
+        Email.findByIdAndRemove(emailId).then((email) => {
+            res.send(email.name + " deleted");
+        });
+    }
+    catch (err) {
+        res.sendDate(err);
+    }
 })
 
 module.exports = router;
