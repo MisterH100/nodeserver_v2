@@ -6,6 +6,7 @@ const emailSchema = new mongoose.Schema({
     lastName: String,
     email: String,
     message: String,
+    sentAt: Date,
 }); 
 
 module.exports = mongoose.model("contact_emails", emailSchema);

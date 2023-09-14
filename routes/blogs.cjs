@@ -8,10 +8,11 @@ router.post("/blog", async (req, res) => {
         const newBlog = new Blog({
             name: req.body.name,
             title: req.body.title,
-            blog: req.body.blog
+            blog: req.body.blog,
+            createdAt: new Date()
         });
         const blog = await newBlog.save();
-        res.send("succsess");
+        res.send(blog);
     }
     catch (err) {
         res.send(err);
@@ -21,7 +22,8 @@ router.post("/blog", async (req, res) => {
 //get Blogs
 router.get("/getBlogs", (req, res) => {
     try {
-        Blog.find().then((blogs) => {
+        Blog.find().sort({createdAt: "descending"})
+        .then((blogs) => {
             res.send(blogs);
         });
     }
@@ -36,7 +38,8 @@ router.get("/getBlogs", (req, res) => {
 router.get("/getBlogs/:id", (req, res) => {
     const blogId = req.params.id;
     try {
-        Blog.findById(blogId).then((blog) => {
+        Blog.findById(blogId)
+        .then((blog) => {
             res.send(blog);
         });
     }
@@ -50,7 +53,8 @@ router.get("/getBlogs/:id", (req, res) => {
 router.delete('/getBlogs/:id', (req, res) => {
     const blogId = req.params.id;
     try {
-        Blog.findByIdAndRemove(blogId).then((blog) => {
+        Blog.findByIdAndRemove(blogId)
+        .then((blog) => {
             res.send(blog.name + blog.title + " deleted");
         });
     }

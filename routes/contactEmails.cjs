@@ -3,13 +3,14 @@ const Email = require("../models/emails.cjs");
 
 //Submit
 
-router.post("/emails", async (req, res) => {
+router.post("/email", async (req, res) => {
     try {
         const newEmail = new Email({
             name: req.body.name,
             lastName: req.body.lastName,
             email: req.body.email,
-            message: req.body.message
+            message: req.body.message,
+            sentAt: new Date()
         });
         const email = await newEmail.save();
         res.send(email);
@@ -22,7 +23,8 @@ router.post("/emails", async (req, res) => {
 //get Emails
 router.get("/getEmails", (req, res) => {
     try {
-        Email.find().then((emails) => {
+        Email.find().sort({sentAt: "descending"})
+        .then((emails) => {
             res.send(emails);
         });
     }
@@ -37,7 +39,8 @@ router.get("/getEmails", (req, res) => {
 router.get("/getEmails/:id", (req, res) => {
     const emailId = req.params.id;
     try {
-        Email.findById(emailId).then((email) => {
+        Email.findById(emailId)
+        .then((email) => {
             res.send(email);
         });
     }
@@ -51,7 +54,8 @@ router.get("/getEmails/:id", (req, res) => {
 router.delete('/getEmails/:id', function (req, res) {
     const emailId = req.params.id;
     try {
-        Email.findByIdAndRemove(emailId).then((email) => {
+        Email.findByIdAndRemove(emailId)
+        .then((email) => {
             res.send(email.name + " deleted");
         });
     }
