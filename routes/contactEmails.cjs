@@ -3,7 +3,7 @@ const Email = require("../models/emails.cjs");
 
 //Submit
 
-router.post("/email", async (req, res) => {
+router.post("/emails/new", async (req, res) => {
     try {
         const newEmail = new Email({
             name: req.body.name,
@@ -21,7 +21,7 @@ router.post("/email", async (req, res) => {
 })
 
 //get Emails
-router.get("/getEmails", (req, res) => {
+router.get("/emails", (req, res) => {
     try {
         Email.find().sort({sentAt: "descending"})
         .then((emails) => {
@@ -36,7 +36,7 @@ router.get("/getEmails", (req, res) => {
 
 //get one Email
 
-router.get("/getEmails/:id", (req, res) => {
+router.get("/emails/email/:id", (req, res) => {
     const emailId = req.params.id;
     try {
         Email.findById(emailId)
@@ -49,9 +49,22 @@ router.get("/getEmails/:id", (req, res) => {
     }
 })
 
+//patch email
+
+router.patch('/emails/update/:id', (req, res)=>{
+    const emailId = req.params.id;
+    try {
+        Email.findByIdAndUpdate(emailId)
+        .then((email)=>{
+            res.send(email);
+        })
+    } catch (error) {
+        res.send(error)
+    }
+})
 
 //delete one email 
-router.delete('/getEmails/:id', function (req, res) {
+router.delete('/emails/delete/:id', (req, res)=> {
     const emailId = req.params.id;
     try {
         Email.findByIdAndRemove(emailId)
@@ -60,7 +73,7 @@ router.delete('/getEmails/:id', function (req, res) {
         });
     }
     catch (err) {
-        res.sendDate(err);
+        res.send(err);
     }
 })
 

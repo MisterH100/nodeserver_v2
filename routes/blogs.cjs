@@ -3,7 +3,7 @@ const Blog = require("../models/InsightsBlogs.cjs");
 
 //Submit
 
-router.post("/blog", async (req, res) => {
+router.post("/blogs/new", async (req, res) => {
     try {
         const newBlog = new Blog({
             name: req.body.name,
@@ -20,7 +20,7 @@ router.post("/blog", async (req, res) => {
 })
 
 //get Blogs
-router.get("/getBlogs", (req, res) => {
+router.get("/blogs", (req, res) => {
     try {
         Blog.find().sort({createdAt: "descending"})
         .then((blogs) => {
@@ -35,7 +35,7 @@ router.get("/getBlogs", (req, res) => {
 
 //get one blog
 
-router.get("/getBlogs/:id", (req, res) => {
+router.get("/blogs/blog/:id", (req, res) => {
     const blogId = req.params.id;
     try {
         Blog.findById(blogId)
@@ -48,9 +48,20 @@ router.get("/getBlogs/:id", (req, res) => {
     }
 })
 
-
+//patch one blog
+router.patch('/blogs/like/:id', (req, res)=>{
+    const blogId = req.params.id;
+    try {
+        Blog.updateOne({"_id": blogId}, {$inc:{'likes':1}})
+        .then((blog)=>{
+            res.send(blog.acknowledged)
+        })
+    } catch (error) {
+        res.send(error)
+    }
+})
 //delete one Blog 
-router.delete('/getBlogs/:id', (req, res) => {
+router.delete('/blogs/delete/:id', (req, res) => {
     const blogId = req.params.id;
     try {
         Blog.findByIdAndRemove(blogId)
