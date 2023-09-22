@@ -49,7 +49,7 @@ router.get("/blogs/blog/:id", (req, res) => {
 })
 
 //patch one blog
-router.patch('/blogs/like/:id', (req, res)=>{
+/*router.patch('/blogs/like/:id', (req, res)=>{
     const blogId = req.params.id;
     try {
         Blog.updateOne({"_id": blogId}, {$inc:{'likes':1}})
@@ -59,7 +59,19 @@ router.patch('/blogs/like/:id', (req, res)=>{
     } catch (error) {
         res.send(error)
     }
-})
+})*/
+
+router.post('/blogs/like/:id', (req, res,) => {
+    const action = req.body.action;
+    const blogId = req.params.id;
+    const counter = action === 'Like' ? 1 : -1;
+    Blog.updateOne({_id: blogId}, {$inc: {'likes': counter}})
+    .then((blog)=>{
+        res.send(action==='Like'? blog.acknowledged+ "  blog liked" : blog.acknowledged+ "  blog unliked" )
+    })
+});
+
+
 //delete one Blog 
 router.delete('/blogs/delete/:id', (req, res) => {
     const blogId = req.params.id;

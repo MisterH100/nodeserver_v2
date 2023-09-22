@@ -7,7 +7,6 @@ router.post("/emails/new", async (req, res) => {
     try {
         const newEmail = new Email({
             name: req.body.name,
-            lastName: req.body.lastName,
             email: req.body.email,
             message: req.body.message,
             sentAt: new Date()
