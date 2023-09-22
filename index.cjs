@@ -18,6 +18,9 @@ mongoose.connect(process.env.MONGO_STRING, {
     console.log(err + "Failed to Connect to MongoDB") 
 });
 
+app.use("/",(req,res)=>{
+    res.send("Hello,Server started");
+});
 app.use("/api", emailRoute);
 app.use("/api", blogRoute);
 
