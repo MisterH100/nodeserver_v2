@@ -8,6 +8,7 @@ router.post("/blogs/new", async (req, res) => {
         const newBlog = new Blog({
             name: req.body.name,
             title: req.body.title,
+            description: req.body.description,
             blog: req.body.blog,
             createdAt: new Date()
         });
