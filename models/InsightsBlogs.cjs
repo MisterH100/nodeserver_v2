@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const blogSchema = new mongoose.Schema({
     name: {type: String, maxLength: 200},
     title: {type: String, maxLength: 200},
-    description: {type: String, maxLength: 300},
+    description: {type: String},
     blog: String,
     likes: {type: Number, default: 0},
     createdAt: {type: Date, default: Date.now()},
