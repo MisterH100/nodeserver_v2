@@ -48,6 +48,19 @@ router.get("/blogs/blog/:id", (req, res) => {
     }
 })
 
+router.get("/blogs/search/:query", (req,res) =>{
+    const query = req.params.query;
+    try{
+        Blog.find({$text:{$search:query}},{score:{$meta:"searchScore"}})
+        .then((blogs) =>{
+            res.send(blogs)
+        });
+    }
+    catch (err) {
+        res.send(err);
+    }
+})
+
 //patch one blog
 /*router.patch('/blogs/like/:id', (req, res)=>{
     const blogId = req.params.id;
