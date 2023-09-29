@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Blog = require("../models/InsightsBlogs.cjs");
+const Blog = require("../models/blogs.cjs");
 
 //Submit
 
