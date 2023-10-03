@@ -34,20 +34,13 @@ const ProductSchema = new mongoose.Schema({
             default:["1","2","3","4","5","6","7","8","9","10"]
         }
     },
-    productImages:[
-        {
-            image_one: Buffer,
+    productImages:{
+        image: {
+            data:Buffer,
+            image_url: String,
             contentType: String
         },
-        {
-            image_two: Buffer,
-            contentType: String
-        },
-        {
-            image_three: Buffer,
-            contentType: String
-        }
-    ],
+    },
     createdAt: {type: Date, default: Date.now()},
 }); 
 

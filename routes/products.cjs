@@ -1,32 +1,25 @@
 const router = require("express").Router();
 const Products = require("../models/products.cjs");
 const multer = require('multer');
-const { GridFsStorage } = require("multer-gridfs-storage")
-const url  = process.env.MONGO_STRING;
+const fs = require('fs');
 
 
-const storage = new GridFsStorage({
-    url,file: (req, file) => {
-      if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-        return {
-          bucketName: "product_images",
-          filename: `${Date.now()}_${file.originalname}`,
-        }
-      } else {
-
-        return `${Date.now()}_${file.originalname}`
-      }
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/product_images')
     },
-})
-
-
+    filename: (req, file, cb) => {
+        cb(null,file.originalname)
+    }
+});
  
+const upload = multer({ storage: storage });
 
-const upload = multer({ storage});
 
 //post products
 router.post('/product', upload.single('productImage'), async (req, res) => {
     const file = req.file;
+    const url = req.protocol + '://' + req.get('host');
     try {
         const newProduct = new Products({
             name: req.body.name,
@@ -40,25 +33,17 @@ router.post('/product', upload.single('productImage'), async (req, res) => {
                 clothing: req.body.clothingSizes, 
                 shoes: req.body.shoeSizes
             },
-            productImages: [
-                {
-                    image_one: file.filename,
+            productImages: {
+                image: {
+                    data: fs.readFileSync('public/product_images/' + file.originalname),
+                    image_url: url + '/product_images/'+ file.originalname,
                     contentType: file.contentType
                 },
-                {
-                    image_two: file.filename,
-                    contentType: file.contentType
-                },
-                {
-                    image_three: file.filename,
-                    contentType: file.contentType
-                },
-            ],
+            },
             createdAt: Date.now()
         })
         const product = await newProduct.save();
-        res.send(product.name + " product sent")
-
+        res.send(product.name + " sent")
     } catch (error) {
         res.send(error)
     }
@@ -72,6 +57,7 @@ router.get('/products', (req, res) => {
         Products.find({})
         .then((product) =>{
             res.send(product)
+            
         })
     } catch (error) {
         res.send(error)
