@@ -1,28 +1,35 @@
 const router = require("express").Router();
 const Products = require("../models/products.cjs");
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
+const { GridFsStorage } = require("multer-gridfs-storage")
+const url = process.env.MONGO_STRING
+const MongoClient = require("mongodb").MongoClient
+const GridFSBucket = require("mongodb").GridFSBucket
+const mongoClient = new MongoClient(url)
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'product_images')
-    },
-    filename: (req, file, cb) => {
-        cb(null,file.originalname)
+const storage = new GridFsStorage({
+  url,file: (req, file) => {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+      return {
+        bucketName: "product_images",
+        filename: `${file.fieldname}_${file.originalname}`,
+      }
+    } else {
+      return `${file.fieldname}_${file.originalname}`
     }
-});
- 
-const upload = multer({ storage: storage });
+  },
+})
+const upload = multer({ storage })
 
 
-//post products
+//post product with single image
 router.post('/product', upload.single('productImage'), async (req, res) => {
     const file = req.file;
-    const url = req.protocol + '://' + req.get('host');
+    const imageUrl = req.protocol + '://' + req.get('host');
     try {
         const newProduct = new Products({
+            seller: req.body.seller,
             name: req.body.name,
             brand: req.body.brand,
             description: req.body.description,
@@ -36,8 +43,8 @@ router.post('/product', upload.single('productImage'), async (req, res) => {
             },
             productImages: {
                 image: {
-                    data: fs.readFileSync(path.join(__dirname +'/product_images/' + file.originalname)),
-                    image_url: url + '/product_images/'+ file.originalname,
+                    data: file.filename,
+                    image_url: imageUrl + '/api/products/product_images/' + file.fieldname + "_" + file.originalname,
                     contentType: file.contentType
                 },
             },
@@ -51,6 +58,50 @@ router.post('/product', upload.single('productImage'), async (req, res) => {
     
 });
 
+//post product with array of files max of 5
+router.post('/product-array', upload.array('productImage',5), async (req, res) => {
+    const files = req.files;
+    const imageUrl = req.protocol + '://' + req.get('host');
+    try {
+        const newProduct = new Products({
+            seller: req.body.seller,
+            name: req.body.name,
+            brand: req.body.brand,
+            description: req.body.description,
+            price: req.body.price,
+            quantity: req.body.quantity,
+            category: req.body.category,
+            gender: req.body.gender,
+            sizes: {
+                clothing: req.body.clothingSizes, 
+                shoes: req.body.shoeSizes
+            },
+            productImages: {
+                image_one: {
+                    data: files[0].filename,
+                    image_url: imageUrl + '/api/products/product_images/' + files[0].fieldname + "_" + files[0].originalname,
+                    contentType: files[0].contentType
+                },
+                image_two: {
+                    data: files[1].filename,
+                    image_url: imageUrl + '/api/products/product_images/' + files[1].fieldname + "_" + files[1].originalname,
+                    contentType: files[1].contentType
+                },
+                image_three: {
+                    data: files[2].filename,
+                    image_url: imageUrl + '/api/products/product_images/' + files[2].fieldname + "_" + files[2].originalname,
+                    contentType: files[2].contentType
+                },
+            },
+            createdAt: Date.now()
+        })
+        const product = await newProduct.save();
+        res.send(product.name + " sent")
+    } catch (error) {
+        res.send(error)
+    }
+
+});
 
 //get products
 router.get('/products', (req, res) => {
@@ -80,5 +131,39 @@ router.get("/products/product/:id", (req, res) => {
         res.send(error);
     }
 })
+
+//get image
+router.get("/products/product_images/:filename", async(req,res) =>{
+    const filename = req.params.filename;
+    try {
+        await mongoClient.connect()
+        const database = mongoClient.db("test")
+        const imageBucket = new GridFSBucket(database, {
+          bucketName: "product_images",
+        })
+    
+        let downloadStream = imageBucket.openDownloadStreamByName(
+          filename
+        )
+        downloadStream.on("data", (data) => {
+          return res.status(200).write(data)
+        })
+    
+        downloadStream.on("error",(data) => {
+          return res.status(404).send({ error: "Image not found" })
+        })
+    
+        downloadStream.on("end", () => {
+          return res.end()
+        })
+      } catch (error) {
+        console.log(error)
+        res.status(500).send({
+          message: "Error Something went wrong",
+          error,
+        })
+      }
+    
+});
 
 module.exports = router;
