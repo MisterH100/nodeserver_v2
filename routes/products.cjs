@@ -2,6 +2,7 @@ const router = require("express").Router();
 const Products = require("../models/products.cjs");
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
 
 
 const storage = multer.diskStorage({
@@ -35,7 +36,7 @@ router.post('/product', upload.single('productImage'), async (req, res) => {
             },
             productImages: {
                 image: {
-                    data: fs.readFileSync('public/product_images/' + file.originalname),
+                    data: fs.readFileSync(path.join(__dirname +'public/product_images/' + file.originalname)),
                     image_url: url + '/product_images/'+ file.originalname,
                     contentType: file.contentType
                 },
