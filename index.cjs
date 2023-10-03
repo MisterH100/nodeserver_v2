@@ -23,7 +23,6 @@ mongoose.connect(process.env.MONGO_STRING, {
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(express.static('public'))
 app.use("/",homeRoute);
 app.use("/api", emailRoute);
 app.use("/api", blogRoute);

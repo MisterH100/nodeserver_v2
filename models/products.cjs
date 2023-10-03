@@ -2,7 +2,14 @@ const mongoose = require("mongoose");
 
 //Data schema
 const ProductSchema = new mongoose.Schema({
-    name: {type: String, maxLength: 200},
+    seller: {
+        type: String, 
+        maxLength: 200
+    },
+    name: {
+        type: String, 
+        maxLength: 200
+    },
     brand: {
         type: String,
         default: "Brand Name"
@@ -35,7 +42,17 @@ const ProductSchema = new mongoose.Schema({
         }
     },
     productImages:{
-        image: {
+        image_one: {
+            data:Buffer,
+            image_url: String,
+            contentType: String
+        },
+        image_two: {
+            data:Buffer,
+            image_url: String,
+            contentType: String
+        },
+        image_three: {
             data:Buffer,
             image_url: String,
             contentType: String
