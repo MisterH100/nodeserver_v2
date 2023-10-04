@@ -72,10 +72,9 @@ router.post('/product-array', upload.array('productImage',5), async (req, res) =
             quantity: req.body.quantity,
             category: req.body.category,
             gender: req.body.gender,
-            sizes: {
-                clothing: req.body.clothingSizes, 
-                shoes: req.body.shoeSizes
-            },
+            type: req.body.type,
+            footsize: req.body.footSize,
+            clothingsize:req.body.clothingSize,
             productImages: {
                 image_one: {
                     data: files[0].filename,
