@@ -26,20 +26,23 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    category: {type:[String]},
+    category: {
+        type:[String]
+    },
     gender: {
         type: String, 
         default: "unisex"
     },
-    sizes: {
-        clothing: {
-            type: [String], 
-            default:["xs","s","m","l", "xl","xxl"]
-        },
-        shoes: {
-            type: [String], 
-            default:["1","2","3","4","5","6","7","8","9","10"]
-        }
+    type:{
+        type:String
+    },
+    shoesize: {
+        type: [],
+        default:[1,2,3,4,5,6,7,8,9]
+    },
+    clothingsize: {
+        type: [],
+        default: ["s","m","l"]
     },
     productImages:{
         image_one: {
