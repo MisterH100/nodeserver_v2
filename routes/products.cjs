@@ -131,6 +131,20 @@ router.get("/products/product/:id", (req, res) => {
     }
 })
 
+//search product
+router.get("/products/search/:query", (req,res) =>{
+  const query = req.params.query;
+  try{
+      Products.find({$text:{$search:query}},{score:{$meta:"searchScore"}})
+      .then((searchedProducts) =>{
+          res.send(searchedProducts)
+      });
+  }
+  catch (err) {
+      res.send(err);
+  }
+})
+
 //get image
 router.get("/products/product_images/:filename", async(req,res) =>{
     const filename = req.params.filename;
