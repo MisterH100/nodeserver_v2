@@ -8,7 +8,7 @@ router.post("/products/orders", async (req, res) => {
         const newProductOrder = new ProductOrder({
             email: req.body.email,
             name: req.body.name,
-            lastNname: req.body.lastNname,
+            lastName: req.body.lastName,
             phone: req.body.phone,
             products: req.body.products
         });
