@@ -10,6 +10,7 @@ const emailRoute = require("./routes/emails.cjs");
 const blogRoute = require("./routes/blogs.cjs");
 const productRoute = require("./routes/products.cjs")
 const homeRoute = require("./routes/home.cjs");
+const productOrder = require("./routes/product_orders.cjs")
 
 
 mongoose.connect(process.env.MONGO_STRING, {
@@ -27,6 +28,7 @@ app.use("/",homeRoute);
 app.use("/api", emailRoute);
 app.use("/api", blogRoute);
 app.use("/api", productRoute);
+app.use("/api", productOrder)
 
 app.listen(process.env.PORT || 5000 , () => {
     console.log(`listening on port ${process.env.PORT || 5000 }`);
