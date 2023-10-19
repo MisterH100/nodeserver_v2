@@ -24,10 +24,12 @@ router.post("/register", async (req, res) => {
                     createdAt: new Date()
                 });
                 const user = newUser.save();
-                res.send('created')  
+                res.status(200).json('user created')  
+                
+                
             }
             if(user){
-                res.send("credentials are taken")
+                res.status(404).json("username is taken")
             }
         })
         
@@ -44,17 +46,18 @@ router.get("/login", async(req,res) =>{
        await User.findOne({username: usernameLogIn})
        .then(user =>{
         if(!user){
-            res.send("user does not exist");
+            res.status(404).json("user does not exist");
         }
 
         if(user){
             const validatePassword = bcrypt.compareSync(passwordLogIn, user.password);
             
             if(!validatePassword){
-                res.send("wrong credentials");
+                res.status(404).json("wrong credentials");;
             }
             if(validatePassword){
-                res.send("logged in");
+                const {password, ...details} = user._doc;
+                res.status(200).json(details);
             }
         }
        })
