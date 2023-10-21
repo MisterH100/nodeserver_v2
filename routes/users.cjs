@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/users.cjs");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const ROUNDS = 10;
 
 
@@ -39,6 +40,8 @@ router.post("/register", async (req, res) => {
     }
 })
 
+
+
 router.post("/login", async(req,res) =>{
     const usernameLogIn = req.body.username;
     const passwordLogIn = req.body.password;
@@ -51,13 +54,15 @@ router.post("/login", async(req,res) =>{
 
         if(user){
             const validatePassword = bcrypt.compareSync(passwordLogIn, user.password);
-            
+            const tokenId = user._id;
+
             if(!validatePassword){
                 res.status(404).json("wrong credentials");;
             }
             if(validatePassword){
                 const {password, ...details} = user._doc;
-                res.status(200).json(details);
+                const token = jwt.sign({ tokenId}, process.env.JWT_SECRET,{ expiresIn: '1d' });
+                res.status(200).json({user:details,token:token});
             }
         }
        })
@@ -66,4 +71,46 @@ router.post("/login", async(req,res) =>{
     }
 })
 
+
+const verifyAuth = (req,res,next) =>{
+    const token = req.headers["auth-token"];
+    if(!token){
+        res.json({authenticated: false})
+    }
+    if(token){
+        try {
+            jwt.verify(token, process.env.JWT_SECRET, (err, decoded) =>{
+                if(err){
+                    res.json({authenticated: false,err});
+                }
+                if(decoded){
+                    next()
+                }
+            });
+        } catch(err) {
+            res.json({authenticated: false,err})
+        }
+    }
+
+}
+
+router.post("/auth", verifyAuth, async(req,res) =>{
+    const AuthUser = req.body.user;
+    try {  
+        await User.findOne({username: AuthUser.username}).then(user =>{
+            if(!user){
+                res.json({authenticated: false, user: AuthUser})
+            }
+            if(user){
+                res.json({authenticated: true})
+            }
+        })
+    } catch (error) {
+        res.json(error)
+    }
+})
+
+
+
 module.exports = router;
+
