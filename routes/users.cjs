@@ -2,7 +2,6 @@ const router = require("express").Router();
 const User = require("../models/users.cjs");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { default: users } = require("../models/users.cjs");
 const ROUNDS = 10;
 
 
