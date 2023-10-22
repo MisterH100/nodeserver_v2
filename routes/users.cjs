@@ -75,6 +75,7 @@ router.post("/login", async(req,res) =>{
     }
 })
 
+
 const verifyAuth = (req,res,next) =>{
     const token = req.headers["auth-token"];
     if(!token){
@@ -96,6 +97,7 @@ const verifyAuth = (req,res,next) =>{
     }
 
 }
+
 router.post("/auth", verifyAuth, async(req,res) =>{
     const AuthUser = req.body.user;
     try {  
@@ -112,4 +114,6 @@ router.post("/auth", verifyAuth, async(req,res) =>{
     }
 })
 
-module.exports = router
+
+module.exports = router;
+
