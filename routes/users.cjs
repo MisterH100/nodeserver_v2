@@ -2,35 +2,40 @@ const router = require("express").Router();
 const User = require("../models/users.cjs");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { generateFromEmail, generateUsername } = require("unique-username-generator");
 const ROUNDS = 10;
 
 
 router.post("/register", async (req, res) => {
 
     try{
-        const newUsername = req.body.username;
+        const newName = req.body.name;
+        const newSurname = req.body.surname
         const newEmail =  req.body.email;
         const newPassword = req.body.password;
+        const newUsername = generateFromEmail(newEmail);
 
-        await User.findOne({username: newUsername})
+        await User.findOne({email: newEmail})
         .then((user) =>{
 
             if(!user){
                 const salt = bcrypt.genSaltSync(ROUNDS);
                 const hashedPassword = bcrypt.hashSync(newPassword, salt);
                 const newUser = new User({
+                    name: newName,
+                    surname: newSurname,
                     username: newUsername,
                     email: newEmail ,
                     password: hashedPassword,
                     createdAt: new Date()
                 });
                 const user = newUser.save();
-                res.status(200).json('user created')  
+                res.status(200).json("user registered succesfully")  
                 
                 
             }
             if(user){
-                res.status(404).json("username is taken")
+                res.status(404).json("this email is taken")
             }
         })
         
@@ -39,7 +44,6 @@ router.post("/register", async (req, res) => {
         res.send(err);
     }
 })
-
 
 
 router.post("/login", async(req,res) =>{
@@ -109,7 +113,6 @@ router.post("/auth", verifyAuth, async(req,res) =>{
         res.json(error)
     }
 })
-
 
 
 module.exports = router;
