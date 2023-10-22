@@ -105,7 +105,7 @@ router.post('/product-array', upload.array('productImage',5), async (req, res) =
 //get products
 router.get('/products', (req, res) => {
     try {
-        Products.find({})
+        Products.find()
         .then((product) =>{
             res.send(product)
             

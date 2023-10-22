@@ -63,27 +63,33 @@ router.get("/blogs/search/:query", (req,res) =>{
 })
 
 //patch one blog
-/*router.patch('/blogs/like/:id', (req, res)=>{
-    const blogId = req.params.id;
-    try {
-        Blog.updateOne({"_id": blogId}, {$inc:{'likes':1}})
-        .then((blog)=>{
-            res.send(blog.acknowledged)
-        })
-    } catch (error) {
-        res.send(error)
-    }
-})*/
 
-router.post('/blogs/like/:id', (req, res,) => {
-    const action = req.body.action;
+router.put('/blogs/like/:id', (req, res)=>{
     const blogId = req.params.id;
-    const counter = action === 'Like' ? 1 : -1;
-    Blog.updateOne({_id: blogId}, {$inc: {'likes': counter}})
-    .then((blog)=>{
-        res.send(action==='Like'? blog.acknowledged+ "  blog liked" : blog.acknowledged+ "  blog unliked" )
-    })
-});
+    const action = req.headers["action"];
+
+    if(action == "like"){
+        try {
+            Blog.updateOne({"_id": blogId}, {$inc:{'likes':1}})
+            .then(()=>{
+                res.json("blog liked")
+            })
+        } catch (error) {
+            res.json(error)
+        }
+    }
+    if(action == "unlike"){
+        try {
+            Blog.updateOne({"_id": blogId}, {$inc:{'likes':-1}})
+            .then(()=>{
+                res.json("blog unliked")
+            })
+        } catch (error) {
+            res.json(error)
+        }
+    }
+})
+
 
 
 //delete one Blog 
