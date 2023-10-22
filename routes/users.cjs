@@ -79,36 +79,39 @@ router.post("/login", async(req,res) =>{
 //auth
 const verifyAuth = (req,res,next) =>{
     const token = req.headers["auth-token"];
-    
+
     if(!token){
         res.json({authenticated: false})
     }
     if(token){
         try {
-            jwt.verify(token, process.env.JWT_SECRET, (err, decoded) =>{
-                if(err){
-                    res.json({authenticated: false,err});
+            jwt.verify(token, process.env.JWT_SECRET, (error, decoded) =>{
+                if(error){
+                    res.json({authenticated: false,error});
                 }
                 if(decoded){
+                    const userId = decoded.tokenId;
+                    res.locals.id = userId;
                     next()
                 }
             });
-        } catch(err) {
-            res.json({authenticated: false,err})
+        } catch(error) {
+            res.json({authenticated: false,error})
         }
     }
 
 }
 
 router.post("/auth", verifyAuth, async(req,res) =>{
-    const AuthUser = req.body.user;
+    const id = res.locals.id;
     try {  
-        await User.findOne({username: AuthUser.username}).then(user =>{
+        await User.findById(id).then(user =>{
             if(!user){
-                res.json({authenticated: false, user: AuthUser})
+                res.json({authenticated: false})
             }
             if(user){
-                res.json({authenticated: true})
+                const {password, ...details} = user._doc;
+                res.json({authenticated: true, user:details});
             }
         })
     } catch (error) {
@@ -131,7 +134,7 @@ router.get("/user/:id", async(req,res) =>{
 })
 
 //update username
-router.put("/user/update/:id", async(req,res) =>{
+router.put("/user/update-user/:id", async(req,res) =>{
     const userId = req.params.id;
     const newUsername = req.body.username;
     try {    
@@ -150,6 +153,37 @@ router.put("/user/update/:id", async(req,res) =>{
             if(user){
                 res.json("this username is taken")
             }
+        })
+    } catch (error) {
+        res.json(error)
+    }
+})
+
+//change password
+router.put("/user/update-pass/:id", async(req,res) =>{
+    const userId = req.params.id;
+    const newPassword = req.body.password;
+    const email = req.body.email;
+    try {
+        await User.findById(userId)
+        .then(user =>{
+            if(!user){
+                res.json("failed to change password")
+            }
+
+            if(user.email == email){
+                try {
+                    const salt = bcrypt.genSaltSync(ROUNDS);
+                    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+                    User.updateOne({_id:userId}, {$set:{password: hashedPassword}})
+                    .then(()=>{
+                        res.json("password changed")
+                    })
+                } catch (error) {
+                    res.json(error)
+                }
+            }
+            res.json("failed to change password")
         })
     } catch (error) {
         res.json(error)
