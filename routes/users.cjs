@@ -47,32 +47,65 @@ router.post("/register", async (req, res) => {
 
 //login
 router.post("/login", async(req,res) =>{
-    const usernameLogIn = req.body.username;
+    const emailLogin = req.body.email;
     const passwordLogIn = req.body.password;
-    try {
-       await User.findOne({username: usernameLogIn})
-       .then(user =>{
-            if(!user){
-                res.status(404).json("user does not exist");
-            }
+    const regex = /\S+@\S+\.\S+/;
 
-            if(user){
-                const validatePassword = bcrypt.compareSync(passwordLogIn, user.password);
-                const tokenId = user._id;
-
-                if(!validatePassword){
-                    res.status(404).json("wrong credentials");;
+    if(!regex.test(emailLogin)){
+        try {
+            await User.findOne({username: emailLogin})
+            .then(user =>{
+                if(!user){
+                    res.status(404).json("user does not exist");
+    
                 }
-                if(validatePassword){
-                    const {password, ...details} = user._doc;
-                    const token = jwt.sign({ tokenId}, process.env.JWT_SECRET,{ expiresIn: '1d' });
-                    res.status(200).json({user:details,token:token});
+        
+                    if(user){
+                    const validatePassword = bcrypt.compareSync(passwordLogIn, user.password);
+                    const tokenId = user._id;
+    
+                    if(!validatePassword){
+                        res.status(404).json("wrong credentials");;
+                    }
+                    if(validatePassword){
+                        const {password, ...details} = user._doc;
+                        const token = jwt.sign({ tokenId}, process.env.JWT_SECRET,{ expiresIn: '1d' });
+                        res.status(200).json({user:details,token:token});
+                    }
                 }
-            }
-        })
-    } catch (error) {
-        res.send(error)
+            })
+        }catch(error) {
+            res.send(error)
+        }
     }
+    if(regex.test(emailLogin)){
+        try {
+            await User.findOne({email: emailLogin})
+            .then(user =>{
+                if(!user){
+                    res.status(404).json("user does not exist");
+    
+                }
+        
+                    if(user){
+                    const validatePassword = bcrypt.compareSync(passwordLogIn, user.password);
+                    const tokenId = user._id;
+    
+                    if(!validatePassword){
+                        res.status(404).json("wrong credentials");;
+                    }
+                    if(validatePassword){
+                        const {password, ...details} = user._doc;
+                        const token = jwt.sign({ tokenId}, process.env.JWT_SECRET,{ expiresIn: '1d' });
+                        res.status(200).json({user:details,token:token});
+                    }
+                }
+            })
+        }catch(error) {
+            res.send(error)
+        }
+    }
+    
 })
 
 
@@ -130,6 +163,22 @@ router.get("/user/:id", async(req,res) =>{
         })
     } catch (error) {
         res.json(error)
+    }
+})
+
+//get users
+router.get("/users", async(req,res) =>{
+    try {
+        await User.find().sort({createdAt: "descending"})
+        .then((users) => {
+            res.json(users.map(user=> {
+                const {password, ...details} = user._doc;
+                return details
+            } ));
+        });
+    }
+    catch (error) {
+        res.send(error);
     }
 })
 
