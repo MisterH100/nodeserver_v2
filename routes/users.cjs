@@ -263,18 +263,20 @@ router.put('/profile/:id', upload.single('profileImage'), async (req, res) => {
     const id = req.params.id
     const file = req.file;
     const imageUrl = req.protocol + '://' + req.get('host');
+
     try {
-        await User.updateOne({_id: id},{$set:{profileImage:{
-            data: file.filename,
-            image_url: imageUrl + '/api/profile/user_profile_images/' + file.fieldname + "_" + file.originalname,
-            contentType: file.contentType
-        }}}).then(()=>
+        await User.findByIdAndUpdate(id,{
+            $set:{profileImage:{
+                data: file.filename,
+                image_url: imageUrl + '/api/profile/user_profile_images/' + file.fieldname + "_" + file.originalname,
+                contentType: file.contentType
+            }}
+        }).then(()=>{
             res.json("profile image updated")
-        )
+        })
     } catch (error) {
         res.json(error)
     }
-      
 });
 
 //get image
