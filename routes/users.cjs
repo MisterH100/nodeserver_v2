@@ -268,8 +268,9 @@ router.put('/profile/:id', upload.single('profileImage'), async (req, res) => {
             data: file.filename,
             image_url: imageUrl + '/api/profile/user_profile_images/' + file.fieldname + "_" + file.originalname,
             contentType: file.contentType
-        }}})
-        res.json("succsess")
+        }}}).then(()=>
+            res.json("profile image updated")
+        )
     } catch (error) {
         res.json(error)
     }
