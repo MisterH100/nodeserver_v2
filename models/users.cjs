@@ -27,6 +27,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    role:{
+        type: String,
+        default: "visitor"
+    },
+    profileImage:{
+        data:Buffer,
+        image_url: String,
+        contentType: String 
+    },
     createdAt: Date,
 },); 
 
