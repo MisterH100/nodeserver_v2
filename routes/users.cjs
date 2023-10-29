@@ -4,6 +4,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { generateFromEmail, generateUsername } = require("unique-username-generator");
 const ROUNDS = 10;
+const multer = require('multer');
+const { GridFsStorage } = require("multer-gridfs-storage")
+const url = process.env.MONGO_STRING
+const MongoClient = require("mongodb").MongoClient
+const GridFSBucket = require("mongodb").GridFSBucket
+const mongoClient = new MongoClient(url)
 
 //register
 router.post("/register", async (req, res) => {
@@ -86,8 +92,7 @@ router.post("/login", async(req,res) =>{
                     res.status(404).json("user does not exist");
     
                 }
-        
-                    if(user){
+                if(user){
                     const validatePassword = bcrypt.compareSync(passwordLogIn, user.password);
                     const tokenId = user._id;
     
@@ -238,6 +243,72 @@ router.put("/user/update-pass/:id", async(req,res) =>{
         res.json(error)
     }
 })
+
+//upload image
+const storage = new GridFsStorage({
+    url,file: (req, file) => {
+      if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+        return {
+          bucketName: "user_profile_images",
+          filename: `${file.fieldname}_${file.originalname}`,
+        }
+      } else {
+        return `${file.fieldname}_${file.originalname}`
+      }
+    },
+})
+const upload = multer({ storage })
+  
+router.put('/profile/:id', upload.single('profileImage'), async (req, res) => {
+    const id = req.params.id
+    const file = req.file;
+    const imageUrl = req.protocol + '://' + req.get('host');
+    try {
+        await User.updateOne({_id: id},{$set:{profileImage:{
+            data: file.filename,
+            image_url: imageUrl + '/api/profile/user_profile_images/' + file.fieldname + "_" + file.originalname,
+            contentType: file.contentType
+        }}})
+        res.json("succsess")
+    } catch (error) {
+        res.json(error)
+    }
+      
+});
+
+//get image
+router.get("/profile/user_profile_images/:filename", async(req,res) =>{
+    const filename = req.params.filename;
+    try {
+        await mongoClient.connect()
+        const database = mongoClient.db("test")
+        const imageBucket = new GridFSBucket(database, {
+            bucketName: "user_profile_images",
+        })
+
+        let downloadStream = imageBucket.openDownloadStreamByName(
+            filename
+        )
+        downloadStream.on("data", (data) => {
+            return res.status(200).write(data)
+        })
+
+        downloadStream.on("error",(data) => {
+            return res.status(404).send({ error: "Image not found" })
+        })
+
+        downloadStream.on("end", () => {
+            return res.end()
+        })
+        } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "Error Something went wrong",
+            error,
+        })
+    }
+    
+});
 
 module.exports = router;
 

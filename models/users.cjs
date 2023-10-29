@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    profileImage:{
+        data:Buffer,
+        image_url: String,
+        contentType: String 
+    },
     createdAt: Date,
 },); 
 
