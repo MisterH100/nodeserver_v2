@@ -10,6 +10,7 @@ router.post("/blogs/new", async (req, res) => {
             title: req.body.title,
             description: req.body.description,
             blog: req.body.blog,
+            publisher: req.body.publisher,
             createdAt: new Date()
         });
         const blog = await newBlog.save();
@@ -91,14 +92,28 @@ router.put('/blogs/like/:id', (req, res)=>{
 })
 
 
-
 //delete one Blog 
 router.delete('/blogs/delete/:id', (req, res) => {
     const blogId = req.params.id;
     try {
         Blog.findByIdAndRemove(blogId)
-        .then((blog) => {
-            res.send(blog.name + blog.title + " deleted");
+        .then(() => {
+            res.send("blog deleted");
+        });
+    }
+    catch (err) {
+        res.send(err);
+    }
+})
+
+
+//delete many blogs
+router.delete('/blogs/erase/:publisher', (req,res) =>{
+    const publisher = req.params.publisher;
+    try {
+        Blog.deleteMany({'publisher': publisher})
+        .then(() => {
+            res.send("blogs erased");
         });
     }
     catch (err) {
