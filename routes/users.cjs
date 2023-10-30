@@ -257,13 +257,12 @@ const storage = new GridFsStorage({
       }
     },
 })
-const upload = multer({ storage })
+const upload = multer({ storage });
   
 router.put('/profile/:id', upload.single('profileImage'), async (req, res) => {
     const id = req.params.id
     const file = req.file;
     const imageUrl = req.protocol + '://' + req.get('host');
-
     try {
         await User.findByIdAndUpdate(id,{
             $set:{profileImage:{
