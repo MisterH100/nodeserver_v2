@@ -103,7 +103,7 @@ router.post("/upload_songs/:id",upload.array('songs'), async (req,res)=>{
 //get albums
 router.get("/albums", (req, res) => {
     try {
-        Albums.find().sort({createdAt: "descending"})
+        Albums.find()
         .then((albums) => {
             res.send(albums);
         });
@@ -114,9 +114,19 @@ router.get("/albums", (req, res) => {
 
 })
 
-router.get("/test", (req,res)=>{
-    res.send("Hi u reached test");
+//get songs from album
+router.get("/album/songs/:albumId", (req,res) =>{
+    const albumID = req.params.albumId
+    try {
+        Albums.findOne({albumId:albumID})
+        .then((album)=>{
+            res.send(album.songs)
+        })
+    } catch (error) {
+        res.send(error)
+    }
 })
+
 
 //get album covers
 router.get("/albums/album_covers/:filename", async(req,res) =>{
