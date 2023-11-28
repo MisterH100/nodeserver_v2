@@ -103,12 +103,11 @@ router.post("/upload_songs/:id",upload.array('songs'), async (req,res)=>{
 //get albums
 router.get("/albums", (req, res) => {
     try {
-        Albums.find()
+        Albums.find().sort({release_date:"descending"})
         .then((albums) => {
             res.send(albums);
         });
-    }
-    catch (err) {
+    }catch (err) {
         res.send(err);
     }
 
