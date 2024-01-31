@@ -24,30 +24,36 @@ const upload = multer({ storage })
 
 
 //post product with single image
-router.post('/product', upload.single('productImage'), async (req, res) => {
-    const file = req.file;
+router.post('/product', upload.array('productImages',5), async (req, res) => {
+    const files = req.files;
     const imageUrl = req.protocol + '://' + req.get('host');
+    const productImages = [
+      {
+        data: files[0].filename,
+        image_url: imageUrl + '/api/products/product_images/' + files[0].fieldname + "_" + files[0].originalname,
+        contentType: files[0].contentType
+      },
+      {
+        data: files[1].filename,
+        image_url: imageUrl + '/api/products/product_images/' + files[1].fieldname + "_" + files[1].originalname,
+        contentType: files[1].contentType
+      },
+      {
+        data: files[2].filename,
+        image_url: imageUrl + '/api/products/product_images/' + files[2].fieldname + "_" + files[2].originalname,
+        contentType: files[2].contentType
+      }
+    ]
     try {
         const newProduct = new Products({
-            seller: req.body.seller,
             name: req.body.name,
             brand: req.body.brand,
             description: req.body.description,
             price: req.body.price,
-            quantity: req.body.quantity,
-            category: req.body.category,
-            gender: req.body.gender,
-            sizes: {
-                clothing: req.body.clothingSizes, 
-                shoes: req.body.shoeSizes
-            },
-            productImages: {
-                image: {
-                    data: file.filename,
-                    image_url: imageUrl + '/api/products/product_images/' + file.fieldname + "_" + file.originalname,
-                    contentType: file.contentType
-                },
-            },
+            stock_quantity: req.body.stock_quantity,
+            categories: req.body.categories,
+            reviews: req.body.review,
+            product_images:productImages,
             createdAt: Date.now()
         })
         const product = await newProduct.save();
@@ -58,49 +64,6 @@ router.post('/product', upload.single('productImage'), async (req, res) => {
     
 });
 
-//post product with array of files max of 5
-router.post('/product-array', upload.array('productImage',5), async (req, res) => {
-    const files = req.files;
-    const imageUrl = req.protocol + '://' + req.get('host');
-    try {
-        const newProduct = new Products({
-            seller: req.body.seller,
-            name: req.body.name,
-            brand: req.body.brand,
-            description: req.body.description,
-            price: req.body.price,
-            quantity: req.body.quantity,
-            category: req.body.category,
-            gender: req.body.gender,
-            type: req.body.type,
-            footsize: req.body.footSize,
-            clothingsize:req.body.clothingSize,
-            productImages: {
-                image_one: {
-                    data: files[0].filename,
-                    image_url: imageUrl + '/api/products/product_images/' + files[0].fieldname + "_" + files[0].originalname,
-                    contentType: files[0].contentType
-                },
-                image_two: {
-                    data: files[1].filename,
-                    image_url: imageUrl + '/api/products/product_images/' + files[1].fieldname + "_" + files[1].originalname,
-                    contentType: files[1].contentType
-                },
-                image_three: {
-                    data: files[2].filename,
-                    image_url: imageUrl + '/api/products/product_images/' + files[2].fieldname + "_" + files[2].originalname,
-                    contentType: files[2].contentType
-                },
-            },
-            createdAt: Date.now()
-        })
-        const product = await newProduct.save();
-        res.send(product.name + " sent")
-    } catch (error) {
-        res.send(error)
-    }
-
-});
 
 //get products
 router.get('/products', (req, res) => {

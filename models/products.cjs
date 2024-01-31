@@ -2,64 +2,51 @@ const mongoose = require("mongoose");
 
 //Data schema
 const ProductSchema = new mongoose.Schema({
-    seller: {
-        type: String, 
-        maxLength: 200
-    },
-    name: {
-        type: String, 
-        maxLength: 200
+    name:{
+        type: String,
     },
     brand: {
-        type: String,
-        default: "Brand Name"
+       type: String,
+        default: "No name"
     },
-    description: {
-        type: String, 
-        maxLength: 300
+    description:{
+        type: String,
     },
     price:{
         type: Number, 
         default: 0
     },
-    quantity: {
-        type: Number,
+    stock_quantity:{
+        type: Number, 
         default: 0
     },
-    category: {
-        type:[String]
+    categories:{
+        type: [
+            {
+                category_id: Number,
+                category_name: String
+            }
+        ],
     },
-    gender: {
-        type: String, 
-        default: "unisex"
+    reviews:{
+        type:[
+            {
+                user_id: Number,
+                review_id: Number,
+                review: Number,
+                comment: String,
+                review_date: {type: Date, default: Date.now()}
+            }
+        ]
     },
-    type:{
-        type:String
-    },
-    shoesize: {
-        type: [],
-        default:[1,2,3,4,5,6,7,8,9]
-    },
-    clothingsize: {
-        type: [],
-        default: ["s","m","l"]
-    },
-    productImages:{
-        image_one: {
-            data:Buffer,
-            image_url: String,
-            contentType: String
-        },
-        image_two: {
-            data:Buffer,
-            image_url: String,
-            contentType: String
-        },
-        image_three: {
-            data:Buffer,
-            image_url: String,
-            contentType: String
-        },
+    product_images:{
+        type:[
+            {
+                data:Buffer,
+                image_url: String,
+                contentType: String
+            }
+        ]
     },
     createdAt: {type: Date, default: Date.now()},
 }); 
