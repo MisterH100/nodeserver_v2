@@ -13,6 +13,7 @@ const homeRoute = require("./routes/home.cjs");
 const productOrder = require("./routes/product_orders.cjs");
 const userRoute = require("./routes/users.cjs");
 const albumRoute = require("./routes/music_albums.cjs");
+const loversRoute = require("./routes/lovers.cjs")
 
 mongoose.connect(process.env.MONGO_STRING, {
     useNewUrlParser: true,
@@ -32,6 +33,7 @@ app.use("/api", productRoute);
 app.use("/api", productOrder);
 app.use("/api", userRoute);
 app.use("/api", albumRoute);
+app.use("/api",loversRoute);
 
 
 app.listen(process.env.PORT || 5000 , () => {
