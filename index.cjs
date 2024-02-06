@@ -13,7 +13,8 @@ const homeRoute = require("./routes/home.cjs");
 const productOrder = require("./routes/product_orders.cjs");
 const userRoute = require("./routes/users.cjs");
 const albumRoute = require("./routes/music_albums.cjs");
-const loversRoute = require("./routes/lovers.cjs")
+const loversRoute = require("./routes/lovers.cjs");
+const generalQuizRoute = require("./routes/generalQuizzes.cjs");
 
 mongoose.connect(process.env.MONGO_STRING, {
     useNewUrlParser: true,
@@ -34,7 +35,7 @@ app.use("/api", productOrder);
 app.use("/api", userRoute);
 app.use("/api", albumRoute);
 app.use("/api",loversRoute);
-
+app.use("/api",generalQuizRoute);
 
 app.listen(process.env.PORT || 5000 , () => {
     console.log(`listening on port ${process.env.PORT || 5000 }`);
