@@ -70,9 +70,7 @@ router.get("/quiz_player/time_stamp/:id",(req,res)=>{
 
 router.put('/quiz_player/update/:id', (req, res)=>{
     const playerId = req.params.id;
-    const {points} = req.body
-    const correctQuizIds = [1,2,3,4];
-    const incorrectQuizIds = [1,2,3,4]
+    const {points,correctQuizIds,incorrectQuizIds} = req.body
     try {
         Player.updateOne({"_id": playerId},
             {
