@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const generalQuizzes = require("../models/generalQuizzes.cjs");
+const generalQuizzes = require("../models/general_quizzes.cjs");
 
 //Submit
 

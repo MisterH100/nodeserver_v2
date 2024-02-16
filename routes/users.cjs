@@ -66,7 +66,7 @@ router.post("/login", async(req,res) =>{
     
                 }
         
-                    if(user){
+                if(user){
                     const validatePassword = bcrypt.compareSync(passwordLogIn, user.password);
                     const tokenId = user._id;
     
