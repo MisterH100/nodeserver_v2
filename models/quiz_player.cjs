@@ -13,7 +13,7 @@ const quizPlayerSchema = new mongoose.Schema({
     },
     timeStamp: {
         type: Date,
-        default: Date.now()
+        default: new Date(2024,3,16)
     },
     points:{
         type:Number,
