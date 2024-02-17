@@ -37,6 +37,25 @@ router.get("/quiz_player/player/:username",(req,res)=>{
     }
 })
 
+router.get("/quiz_player/player_by_id/:id",(req,res)=>{
+    const player_id = req.params.id
+    try{
+        Player.findById(player_id)
+        .then((player)=>{
+            if(!player){
+                res.json({player:null})
+            }
+            if(player){
+                const {username,createdAt,...details} = player._doc
+                res.send(details)
+            }
+        })
+    }
+    catch (err) {
+        res.send(err);
+    }
+})
+
 router.get("/quiz_player/players/all", (req, res) => {
     try {
         Player.find().sort({createdAt: "descending"})
@@ -76,7 +95,7 @@ router.put('/quiz_player/update/:id', (req, res)=>{
             {
                 $inc:{'points':points},
                 $push:{'correctQuizzes':{$each:correctQuizIds},'incorrectQuizzes':{$each:incorrectQuizIds}},
-                $set:{'timeStamp':Date.now()}
+                $set:{'completed':true,'timeStamp':Date.now()}
             },
         )
         .then((player)=>{
