@@ -10,35 +10,15 @@ router.post("/quiz_player/new", async (req, res) => {
             username: username
         });
         const player = await newPlayer.save();
-        res.send(player);
+        res.json({_id:player._id,username:player.username});
     }
     catch (err) {
         res.send(err);
     }
 })
 
-router.get("/quiz_player/player/:username",(req,res)=>{
-    const username = req.params.username
-    try{
-        Player.findOne({"username":username})
-        .then((player)=>{
-            if(!player){
-                res.json({username:null})
-            }
-            if(player){
-                const tokenId = player._id;
-                const token = jwt.sign({ tokenId}, process.env.JWT_SECRET);
-                res.json({player_id:player._id,token:token})
-            }
-        })
-    }
-    catch (err) {
-        res.send(err);
-    }
-})
-
-router.get("/quiz_player/player_by_id/:id",(req,res)=>{
-    const player_id = req.params.id
+router.get("/quiz_player/player/:id",(req,res)=>{
+    const player_id= req.params.id
     try{
         Player.findById(player_id)
         .then((player)=>{
@@ -46,8 +26,10 @@ router.get("/quiz_player/player_by_id/:id",(req,res)=>{
                 res.json({player:null})
             }
             if(player){
-                const {username,createdAt,...details} = player._doc
-                res.send(details)
+                const tokenId = player._id;
+                const token = jwt.sign({ tokenId}, process.env.JWT_SECRET);
+                const {createdAt,...details} = player._doc
+                res.json({details,token:token})
             }
         })
     }
@@ -55,6 +37,49 @@ router.get("/quiz_player/player_by_id/:id",(req,res)=>{
         res.send(err);
     }
 })
+
+const verifyAuth = (req,res,next) =>{
+    const token = req.headers["quiz-token"];
+
+    if(!token){
+        res.json({authenticated: false})
+    }
+    if(token){
+        try {
+            jwt.verify(token, process.env.JWT_SECRET, (error, decoded) =>{
+                if(error){
+                    res.json({authenticated: false,error});
+                }
+                if(decoded){
+                    const userId = decoded.tokenId;
+                    res.locals.id = userId;
+                    next()
+                }
+            });
+        } catch(error) {
+            res.json({authenticated: false,error})
+        }
+    }
+
+}
+
+router.post("/quiz_player/auth", verifyAuth, async(req,res) =>{
+    const id = res.locals.id;
+    try {  
+        await Player.findById(id).then(player =>{
+            if(!player){
+                res.json({authenticated: false})
+            }
+            if(player){
+                const {createdAt,...details} = player._doc
+                res.json({authenticated: true, details});
+            }
+        })
+    } catch (error) {
+        res.json(error)
+    }
+})
+
 
 router.get("/quiz_player/players/all", (req, res) => {
     try {
