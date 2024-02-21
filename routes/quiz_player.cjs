@@ -144,7 +144,7 @@ router.get("/quiz_player/points/:id", (req, res) => {
 
 router.get("/quiz_player/players/points", (req, res) => {
   try {
-    Player.aggregate([{ $project: { points: 1, _id: 0 } }])
+    Player.aggregate([{ $project: { points: 1, username: 1, _id: 0 } }])
       .sort({ points: "descending" })
       .then((points) => {
         if (points) {
