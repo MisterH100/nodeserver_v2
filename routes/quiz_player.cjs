@@ -17,7 +17,8 @@ router.post("/quiz_player/new", async (req, res) => {
       } catch (err) {
         res.send(err);
       }
-    } else {
+    }
+    if (player) {
       res.json({ _id: null, username: null, message: "username taken" });
     }
   });
