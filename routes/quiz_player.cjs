@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 router.post("/quiz_player/new", async (req, res) => {
   const { username } = req.body;
 
-  await Player.find({ username: username }).then(async (player) => {
+  await Player.findOne({ username: username }).then(async (player) => {
     if (!player) {
       try {
         const newPlayer = new Player({
