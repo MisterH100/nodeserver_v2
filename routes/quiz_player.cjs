@@ -5,15 +5,22 @@ const jwt = require("jsonwebtoken");
 //Submit
 router.post("/quiz_player/new", async (req, res) => {
   const { username } = req.body;
-  try {
-    const newPlayer = new Player({
-      username: username,
-    });
-    const player = await newPlayer.save();
-    res.json({ _id: player._id, username: player.username });
-  } catch (err) {
-    res.send(err);
-  }
+
+  await Player.find({ username: username }).then(async (player) => {
+    if (!player) {
+      try {
+        const newPlayer = new Player({
+          username: username,
+        });
+        const player = await newPlayer.save();
+        res.json({ _id: player._id, username: player.username, message: null });
+      } catch (err) {
+        res.send(err);
+      }
+    } else {
+      res.json({ _id: null, username: null, message: "username taken" });
+    }
+  });
 });
 
 router.get("/quiz_player/player/:id", (req, res) => {
