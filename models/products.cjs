@@ -16,37 +16,29 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  stock_quantity: {
+  in_stock: {
+    type: Number,
+    default: 0,
+  },
+  quantity: {
     type: Number,
     default: 0,
   },
   categories: {
-    type: [
-      {
-        category_id: Number,
-        category_name: String,
-      },
-    ],
+    type: [String],
   },
   reviews: {
     type: [
       {
         user_id: Number,
-        review_id: Number,
         review: Number,
         comment: String,
         review_date: { type: Date, default: Date.now() },
       },
     ],
   },
-  product_images: {
-    type: [
-      {
-        data: Buffer,
-        image_url: String,
-        contentType: String,
-      },
-    ],
+  images: {
+    type: [String],
   },
   createdAt: { type: Date, default: Date.now() },
 });

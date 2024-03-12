@@ -21,7 +21,7 @@ const productOrdersSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  orderdAt: {
+  orderedAt: {
     type: Date,
     default: Date.now(),
   },
