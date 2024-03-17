@@ -21,11 +21,13 @@ router.post("/products/orders", async (req, res) => {
       terms: req.body.terms,
     });
     const order = await newProductOrder.save();
-    const { order_number, payment_method, address, ...other } = order._doc;
+    const { order_number, payment_method, address, orderDate, ...other } =
+      order._doc;
     res.send({
       order_number: order_number,
       payment_method: payment_method,
       address: address,
+      order_date: orderDate,
     });
 
     //send message to client
