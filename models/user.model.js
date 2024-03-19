@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 //Data schema
 
@@ -39,4 +39,5 @@ const userSchema = new mongoose.Schema({
   createdAt: Date,
 });
 
-module.exports = mongoose.model("user_accounts", userSchema);
+const User = mongoose.model("user_accounts", userSchema);
+export default User;

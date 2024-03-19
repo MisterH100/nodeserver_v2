@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import mongoose from "mongoose";
 
 //Data schema
 const productOrdersSchema = new mongoose.Schema(
@@ -22,7 +21,7 @@ const productOrdersSchema = new mongoose.Schema(
     address: {
       type: String,
     },
-    products: [{ type: Schema.Types.ObjectId, ref: "products" }],
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }],
     payment_method: {
       type: String,
     },
@@ -41,4 +40,5 @@ const productOrdersSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("product_orders", productOrdersSchema);
+const ProductOrder = mongoose.model("product_orders", productOrdersSchema);
+export default ProductOrder;

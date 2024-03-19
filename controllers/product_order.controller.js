@@ -1,13 +1,9 @@
-const router = require("express").Router();
-const orderid = require("order-id")("key");
-const sgMail = require("@sendgrid/mail");
-require("dotenv").config();
-const ProductOrder = require("../models/product_orders.cjs");
+import order_id from "order-id";
+import sgMail from "@sendgrid/mail";
+import ProductOrder from "../models/product_order.model.js";
 
-//Submit
-
-router.post("/products/orders", async (req, res) => {
-  const orderNumber = orderid.generate();
+export const newOrder = async (req, res) => {
+  const orderNumber = order_id.generate();
   try {
     const newProductOrder = new ProductOrder({
       order_number: orderNumber,
@@ -43,10 +39,10 @@ router.post("/products/orders", async (req, res) => {
         orderNumber +
         " has been received and processed, our agent will be in touch with you shortly",
       html: `<h1>Order received</h1><br/>
-                <h3>ProductStore Official</h3>
-                <p>Order Number: ${orderNumber}</p>
-                <p>Your order has been received and processed, our agent will be in touch with you shortly</p>
-                `,
+                  <h3>ProductStore Official</h3>
+                  <p>Order Number: ${orderNumber}</p>
+                  <p>Your order has been received and processed, our agent will be in touch with you shortly</p>
+                  `,
     };
     sgMail
       .send(msg)
@@ -67,8 +63,8 @@ router.post("/products/orders", async (req, res) => {
         "ProductStore A new order has been placed with order number: " +
         orderNumber,
       html: `<h1>New order</h1> <br/> 
-            <h3>ProductStore Official</h3>
-            <p> A new order has been placed with order number: ${orderNumber}</p> <br/>`,
+              <h3>ProductStore Official</h3>
+              <p> A new order has been placed with order number: ${orderNumber}</p> <br/>`,
     };
     sgMail
       .send(notification)
@@ -82,10 +78,9 @@ router.post("/products/orders", async (req, res) => {
   } catch (err) {
     res.send(err);
   }
-});
+};
 
-// get order products
-router.get("/order_products/:order_number", (req, res) => {
+export const orderProducts = async (req, res) => {
   const orderNumber = req.params.order_number;
   try {
     ProductOrder.findOne({ order_number: orderNumber })
@@ -97,10 +92,9 @@ router.get("/order_products/:order_number", (req, res) => {
   } catch (error) {
     res.send(error);
   }
-});
+};
 
-//get orders
-router.get("/orders", (req, res) => {
+export const getOrders = async (req, res) => {
   try {
     ProductOrder.find()
       .populate("products")
@@ -111,6 +105,4 @@ router.get("/orders", (req, res) => {
   } catch (error) {
     res.send(error);
   }
-});
-
-module.exports = router;
+};

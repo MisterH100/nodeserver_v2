@@ -1,5 +1,6 @@
-const router = require("express").Router();
+import express from "express";
 
+const router = express.Router();
 router.get("", (req, res) => {
   try {
     res.writeHead(200, { "Content-Type": "text/html" });
@@ -11,4 +12,4 @@ router.get("", (req, res) => {
     res.send(err);
   }
 });
-module.exports = router;
+export default router;
