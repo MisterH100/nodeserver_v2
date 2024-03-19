@@ -2,10 +2,12 @@ import Activity from "../models/activity.model.js";
 
 export const newActivity = async (req, res) => {
   const { title, description } = req.body;
+  const start_date = Date.now();
   try {
     const newActivity = new Activity({
       title,
       description,
+      start_date,
     });
     await newActivity.save();
     res.json(newActivity);
