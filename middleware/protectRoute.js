@@ -1,8 +1,10 @@
 import Jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
 
 const protectRoute = async (req, res, next) => {
   try {
-    const token = req.cookie.jwt_cookie;
+    const token = req.cookies.jwt_cookie;
+
     if (!token) {
       return res.status(401).json({
         message: "You are not logged in",
@@ -15,7 +17,13 @@ const protectRoute = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized token" });
     }
 
-    req.user_id = decoded.user_id;
+    const user = await User.findById(decoded.user_id);
+
+    if (!user) {
+      return res.status(401).json({ message: "User does not exist" });
+    }
+
+    req.user = user;
 
     next();
   } catch (error) {

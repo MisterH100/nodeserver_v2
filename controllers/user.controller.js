@@ -74,7 +74,7 @@ export const LoginUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  const userID = req.user_id;
+  const userID = req.user._id;
   const { address, phone } = req.body;
   try {
     await User.findByIdAndUpdate(userID, {
@@ -82,6 +82,24 @@ export const updateUser = async (req, res) => {
       phone: phone,
     });
     res.status(200).json({ message: "update successfully" });
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+export const authUser = async (req, res) => {
+  const userID = req.user._id;
+  try {
+    const user = await User.findById(userID);
+
+    if (!user) {
+      res.status(404).json({ message: "user does not exist" });
+    }
+
+    const { password, ...details } = user._doc;
+    res
+      .status(200)
+      .json({ message: "authenticated successfully", user: details });
   } catch (error) {
     res.send(error);
   }
