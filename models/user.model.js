@@ -1,43 +1,43 @@
 import mongoose from "mongoose";
 
-//Data schema
+const userSchema = new mongoose.Schema(
+  {
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    gender: {
+      type: String,
+      required: true,
+      enum: ["male", "female"],
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
+    address: {
+      type: String,
+      default: "",
+    },
+    profileImage: {
+      type: String,
+      default: "",
+    },
+  },
+  { timestamps: true }
+);
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  surname: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  admin: {
-    type: Boolean,
-    default: false,
-  },
-  role: {
-    type: String,
-    default: "visitor",
-  },
-  profileImage: {
-    data: Buffer,
-    image_url: String,
-    contentType: String,
-  },
-  createdAt: Date,
-});
-
-const User = mongoose.model("user_accounts", userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;
