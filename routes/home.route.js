@@ -2,8 +2,6 @@ import express from "express";
 
 const router = express.Router();
 router.get("", (req, res) => {
-  const origins = process.env.ORIGINS;
-  console.log(origins);
   try {
     res.writeHead(200, { "Content-Type": "text/html" });
     res.write(
