@@ -14,10 +14,14 @@ const app = express();
 dotenv.config();
 app.use(
   cors({
-    origin: process.env.ORIGINS.split(","),
+    origin: [
+      "http://localhost:3000",
+      "https://productshop-official.vercel.app",
+    ],
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
