@@ -14,10 +14,7 @@ const app = express();
 dotenv.config();
 app.use(
   cors({
-    origin:
-      /*process.env.ENVIRONMENT == "development"
-        ? "*"
-        :*/ process.env.ORIGINS.split(","),
+    origin: process.env.ORIGINS.split(","),
     credentials: true,
   })
 );

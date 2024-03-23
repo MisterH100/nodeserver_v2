@@ -89,7 +89,6 @@ export const updateUser = async (req, res) => {
 
 export const authUser = async (req, res) => {
   const userID = req.user._id;
-  console.log(req.cookies.jwt_cookie);
   try {
     const user = await User.findById(userID);
 
