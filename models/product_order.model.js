@@ -21,7 +21,7 @@ const productOrdersSchema = new mongoose.Schema(
     address: {
       type: String,
     },
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }],
+    products: [],
     payment_method: {
       type: String,
     },
@@ -31,6 +31,10 @@ const productOrdersSchema = new mongoose.Schema(
     completed: {
       type: Boolean,
       default: false,
+    },
+    price: {
+      type: Number,
+      default: 0,
     },
     orderDate: {
       type: Date,

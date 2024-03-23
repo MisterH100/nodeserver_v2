@@ -3,7 +3,7 @@ import sgMail from "@sendgrid/mail";
 import ProductOrder from "../models/product_order.model.js";
 
 export const newOrder = async (req, res) => {
-  const orderNumber = order_id.generate();
+  const orderNumber = order_id(process.env.JWT_SECRET).generate();
   try {
     const newProductOrder = new ProductOrder({
       order_number: orderNumber,
@@ -13,6 +13,7 @@ export const newOrder = async (req, res) => {
       phone: req.body.phone,
       address: req.body.address,
       products: req.body.products,
+      price: req.body.price,
       payment_method: req.body.payment_method,
       terms: req.body.terms,
     });
@@ -39,9 +40,15 @@ export const newOrder = async (req, res) => {
         orderNumber +
         " has been received and processed, our agent will be in touch with you shortly",
       html: `<h1>Order received</h1><br/>
-                  <h3>ProductStore Official</h3>
+                  <h3>external wear sa</h3>
                   <p>Order Number: ${orderNumber}</p>
                   <p>Your order has been received and processed, our agent will be in touch with you shortly</p>
+                  <div>
+                    ${req.body.products.map(
+                      (product) => `<p>${product.name}</p><br/>`
+                    )}
+                  </div>
+                  <p>R ${req.body.price}</p>
                   `,
     };
     sgMail
@@ -63,7 +70,7 @@ export const newOrder = async (req, res) => {
         "ProductStore A new order has been placed with order number: " +
         orderNumber,
       html: `<h1>New order</h1> <br/> 
-              <h3>ProductStore Official</h3>
+              <h3>external wear sa</h3>
               <p> A new order has been placed with order number: ${orderNumber}</p> <br/>`,
     };
     sgMail
@@ -83,12 +90,10 @@ export const newOrder = async (req, res) => {
 export const orderProducts = async (req, res) => {
   const orderNumber = req.params.order_number;
   try {
-    ProductOrder.findOne({ order_number: orderNumber })
-      .populate("products")
-      .then((order) => {
-        const { products, ...other } = order._doc;
-        res.send({ products: products });
-      });
+    ProductOrder.findOne({ order_number: orderNumber }).then((order) => {
+      const { products, ...other } = order._doc;
+      res.send({ products: products });
+    });
   } catch (error) {
     res.send(error);
   }
