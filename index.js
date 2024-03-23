@@ -12,7 +12,15 @@ import activityRoute from "./routes/activity.route.js";
 
 const app = express();
 dotenv.config();
-app.use(cors());
+app.use(
+  cors({
+    origin:
+      /*process.env.ENVIRONMENT == "development"
+        ? "*"
+        :*/ process.env.ORIGINS.split(","),
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
