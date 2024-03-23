@@ -9,7 +9,7 @@ export const RegisterUser = async (req, res) => {
   try {
     const user = await User.findOne({ email: email });
     if (user) {
-      res.json({ message: "this email is taken" });
+      res.status(409).json({ message: "this email is taken" });
     } else {
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(password, salt);
@@ -52,18 +52,18 @@ export const LoginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
-      res.json({ message: "user does not exist" });
-    }
+      res.status(400).json({ message: "user does not exist" });
+    } else {
+      const validatePassword = bcrypt.compareSync(password, user.password);
 
-    const validatePassword = bcrypt.compareSync(password, user.password);
-
-    if (!validatePassword) {
-      res.status(400).json({ message: "wrong credentials" });
-    }
-    if (validatePassword) {
-      setJWTCookie(user._id, res);
-      const { password, ...details } = user._doc;
-      res.status(200).json({ message: "login successful", user: details });
+      if (!validatePassword) {
+        res.status(400).json({ message: "wrong credentials" });
+      }
+      if (validatePassword) {
+        setJWTCookie(user._id, res);
+        const { password, ...details } = user._doc;
+        res.status(200).json({ message: "login successful", user: details });
+      }
     }
   } catch (error) {
     res.send(error);
@@ -90,13 +90,13 @@ export const authUser = async (req, res) => {
     const user = await User.findById(userID);
 
     if (!user) {
-      res.json({ message: "user does not exist" });
+      res.status(400).json({ message: "user does not exist" });
+    } else {
+      const { password, ...details } = user._doc;
+      res
+        .status(200)
+        .json({ message: "authenticated successfully", user: details });
     }
-
-    const { password, ...details } = user._doc;
-    res
-      .status(200)
-      .json({ message: "authenticated successfully", user: details });
   } catch (error) {
     res.send(error);
   }
