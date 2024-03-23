@@ -14,7 +14,7 @@ const app = express();
 dotenv.config();
 app.use(
   cors({
-    origin: true,
+    origin: process.env.ORIGINS.split(","),
     credentials: true,
   })
 );
