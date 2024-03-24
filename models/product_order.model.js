@@ -6,6 +6,9 @@ const productOrdersSchema = new mongoose.Schema(
     order_number: {
       type: String,
     },
+    customer_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+    },
     first_name: {
       type: String,
     },

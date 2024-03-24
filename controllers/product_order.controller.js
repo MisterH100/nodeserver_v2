@@ -7,6 +7,7 @@ export const newOrder = async (req, res) => {
   try {
     const newProductOrder = new ProductOrder({
       order_number: orderNumber,
+      customer_id: req.body.customer_id,
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       email: req.body.email,
@@ -111,10 +112,23 @@ export const getOrders = async (req, res) => {
   }
 };
 
-export const getOrdersWithEmail = async (req, res) => {
+export const getOrdersByEmail = async (req, res) => {
   const email = req.params.email;
   try {
     ProductOrder.find({ email: email })
+      .sort({ createdAt: "descending" })
+      .then((orders) => {
+        res.send(orders);
+      });
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+export const getOrdersByCustomerId = async (req, res) => {
+  const id = req.params.id;
+  try {
+    ProductOrder.find({ customer_id: id })
       .sort({ createdAt: "descending" })
       .then((orders) => {
         res.send(orders);

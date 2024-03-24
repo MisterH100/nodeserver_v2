@@ -66,10 +66,7 @@ export const getProduct = async (req, res) => {
 export const searchProducts = async (req, res) => {
   const query = req.params.query;
   try {
-    Product.find(
-      { $text: { $search: query } },
-      { score: { $meta: "searchScore" } }
-    ).then((searchedProducts) => {
+    Product.find({ $text: { $search: query } }).then((searchedProducts) => {
       res.send(searchedProducts);
     });
   } catch (err) {

@@ -43,5 +43,7 @@ const ProductSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now() },
 });
 
+ProductSchema.index({ name: "text", brand: "text", description: "text" });
+
 const Product = mongoose.model("products", ProductSchema);
 export default Product;
