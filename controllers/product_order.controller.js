@@ -102,7 +102,19 @@ export const orderProducts = async (req, res) => {
 export const getOrders = async (req, res) => {
   try {
     ProductOrder.find()
-      .populate("products")
+      .sort({ createdAt: "descending" })
+      .then((orders) => {
+        res.send(orders);
+      });
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+export const getOrdersWithEmail = async (req, res) => {
+  const email = req.params.email;
+  try {
+    ProductOrder.find({ email: email })
       .sort({ createdAt: "descending" })
       .then((orders) => {
         res.send(orders);
