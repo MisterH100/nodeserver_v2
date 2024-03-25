@@ -16,7 +16,7 @@ router.post("/products/new/list", newProductList);
 
 router.get("/products/all", getAllProducts);
 
-router.get("/products/:id", getProductById);
+router.get("/products/id/:id", getProductById);
 
 router.get("/products/category/:category", getProductsByCategory);
 

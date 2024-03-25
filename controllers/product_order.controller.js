@@ -88,7 +88,7 @@ export const newOrder = async (req, res) => {
   }
 };
 
-export const orderProducts = async (req, res) => {
+export const getOrderByNumber = async (req, res) => {
   const orderNumber = req.params.order_number;
   try {
     ProductOrder.findOne({ order_number: orderNumber }).then((order) => {
@@ -100,7 +100,7 @@ export const orderProducts = async (req, res) => {
   }
 };
 
-export const getOrders = async (req, res) => {
+export const getAllOrders = async (req, res) => {
   try {
     ProductOrder.find()
       .sort({ createdAt: "descending" })

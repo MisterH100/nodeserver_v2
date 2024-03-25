@@ -1,22 +1,22 @@
 import express from "express";
 import {
-  getOrders,
+  getAllOrders,
   getOrdersByCustomerId,
   getOrdersByEmail,
   newOrder,
-  orderProducts,
+  getOrderByNumber,
 } from "../controllers/product_order.controller.js";
 
 const router = express.Router();
 
-router.post("/products/orders", newOrder);
+router.post("/products/orders/new", newOrder);
 
-router.get("/order_products/:order_number", orderProducts);
+router.get("/products/orders/all", getAllOrders);
 
-router.get("/orders", getOrders);
+router.get("/products/orders/number/:order_number", getOrderByNumber);
 
-router.get("/orders/email/:email", getOrdersByEmail);
+router.get("/products/orders/email/:email", getOrdersByEmail);
 
-router.get("/orders/id/:id", getOrdersByCustomerId);
+router.get("/products/orders/id/:id", getOrdersByCustomerId);
 
 export default router;

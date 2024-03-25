@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import connectToDatabase from "./db/connectToDatabase.js";
 import productRoute from "./routes/product.route.js";
 import homeRoute from "./routes/home.route.js";
-import productOrder from "./routes/product_order.route.js";
+import productOrderRoute from "./routes/product_order.route.js";
 import userRoute from "./routes/user.route.js";
 import activityRoute from "./routes/activity.route.js";
 
@@ -25,7 +25,7 @@ app.use(
 );
 app.use("/", homeRoute);
 app.use("/api", productRoute);
-app.use("/api", productOrder);
+app.use("/api", productOrderRoute);
 app.use("/api", userRoute);
 app.use("/api", activityRoute);
 

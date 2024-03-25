@@ -7,10 +7,10 @@ import {
 
 const router = express.Router();
 
-router.post("/activity", newActivity);
+router.post("/activity/new", newActivity);
 
-router.put("/activity/:id", stopActivity);
+router.get("/activities/all", getActivities);
 
-router.get("/activities", getActivities);
+router.put("/activity/id/:id", stopActivity);
 
 export default router;
