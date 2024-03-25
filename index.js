@@ -10,22 +10,19 @@ import productOrder from "./routes/product_order.route.js";
 import userRoute from "./routes/user.route.js";
 import activityRoute from "./routes/activity.route.js";
 
-const app = express();
 dotenv.config();
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://productshop-official.vercel.app",
-    ],
-    credentials: true,
-  })
-);
-
+const app = express();
+const origins = process.env.ORIGINS.split(",");
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: origins,
+    credentials: true,
+  })
+);
 app.use("/", homeRoute);
 app.use("/api", productRoute);
 app.use("/api", productOrder);

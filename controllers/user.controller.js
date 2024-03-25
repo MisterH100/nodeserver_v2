@@ -1,12 +1,32 @@
 import bcrypt from "bcrypt";
+import vine, { errors } from "@vinejs/vine";
 import User from "../models/user.model.js";
-import setJWTCookie from "../lib/generateToken.js";
+import generateJWTToken from "../lib/generateToken.js";
 
 export const RegisterUser = async (req, res) => {
   const { first_name, last_name, email, password, phone, gender, address } =
     req.body;
 
+  const schema = vine.object({
+    first_name: vine.string().minLength(3),
+    last_name: vine.string().minLength(3),
+    email: vine.string().email(),
+    gender: vine.enum(["male", "female"]),
+    password: vine.string(),
+  });
+
+  const data = {
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
+    gender: gender,
+    password: password,
+  };
+
   try {
+    const validator = vine.compile(schema);
+    await validator.validate(data);
+
     const user = await User.findOne({ email: email });
     if (user) {
       res.status(409).json({ message: "this email is taken" });
@@ -26,7 +46,7 @@ export const RegisterUser = async (req, res) => {
         profileImage: gender === "male" ? maleProfilePic : femaleProfilePic,
       });
 
-      setJWTCookie(newUser._id, res);
+      const token = await generateJWTToken(newUser._id);
       await newUser.save();
       res.status(200).json({
         message: "user registered successfully",
@@ -40,16 +60,38 @@ export const RegisterUser = async (req, res) => {
           address: newUser.address,
           profileImage: newUser.profileImage,
         },
+        token: token,
       });
     }
-  } catch (err) {
-    res.send(err);
+  } catch (error) {
+    if (error instanceof errors.E_VALIDATION_ERROR) {
+      res.status(400).json({
+        message: error.messages[0].message,
+      });
+    } else {
+      res
+        .status(500)
+        .json({ message: "failed to register, internal server error" });
+    }
   }
 };
 
 export const LoginUser = async (req, res) => {
   const { email, password } = req.body;
+  const schema = vine.object({
+    email: vine.string().email(),
+    password: vine.string(),
+  });
+
+  const data = {
+    email: email,
+    password: password,
+  };
+
   try {
+    const validator = vine.compile(schema);
+    await validator.validate(data);
+
     const user = await User.findOne({ email: email });
     if (!user) {
       res.status(400).json({ message: "user does not exist" });
@@ -60,27 +102,56 @@ export const LoginUser = async (req, res) => {
         res.status(400).json({ message: "wrong credentials" });
       }
       if (validatePassword) {
-        setJWTCookie(user._id, res);
+        const token = await generateJWTToken(user._id);
         const { password, ...details } = user._doc;
-        res.status(200).json({ message: "login successful", user: details });
+        res
+          .status(200)
+          .json({ message: "login successful", user: details, token: token });
       }
     }
   } catch (error) {
-    res.send(error);
+    if (error instanceof errors.E_VALIDATION_ERROR) {
+      res.status(400).json({
+        message: error.messages[0].message,
+      });
+    } else {
+      res
+        .status(500)
+        .json({ message: "failed to login, internal server error" });
+    }
   }
 };
 
 export const updateUser = async (req, res) => {
   const userID = req.user._id;
   const { address, phone } = req.body;
+  const schema = vine.object({
+    address: vine.string(),
+    phone: vine.string(),
+  });
+
+  const data = {
+    address: address,
+    phone: phone,
+  };
   try {
+    const validator = vine.compile(schema);
+    await validator.validate(data);
+
     await User.findByIdAndUpdate(userID, {
-      address: address,
-      phone: phone,
+      $set: { address: address, phone: phone },
     });
     res.status(200).json({ message: "update successfully" });
   } catch (error) {
-    res.send(error);
+    if (error instanceof errors.E_VALIDATION_ERROR) {
+      res.status(400).json({
+        message: error.messages[0].message,
+      });
+    } else {
+      res
+        .status(500)
+        .json({ message: "failed to update, internal server error" });
+    }
   }
 };
 
@@ -98,15 +169,18 @@ export const authUser = async (req, res) => {
         .json({ message: "authenticated successfully", user: details });
     }
   } catch (error) {
-    res.send(error);
+    res
+      .status(500)
+      .json({ message: "failed to authenticate, internal server error" });
   }
 };
 
 export const LogoutUser = (req, res) => {
   try {
-    res.cookie("jwt_cookie", "", { maxAge: 0 });
     res.status(200).json({ message: "logged out successfully" });
   } catch (error) {
-    res.send(error);
+    res
+      .status(500)
+      .json({ message: "failed to logout, internal server error" });
   }
 };

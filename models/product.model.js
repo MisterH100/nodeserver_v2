@@ -24,7 +24,10 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  categories: {
+  category: {
+    type: String,
+  },
+  tags: {
     type: [String],
   },
   reviews: {
@@ -43,7 +46,12 @@ const ProductSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now() },
 });
 
-ProductSchema.index({ name: "text", brand: "text", description: "text" });
+ProductSchema.index({
+  name: "text",
+  brand: "text",
+  description: "text",
+  category: "text",
+});
 
 const Product = mongoose.model("products", ProductSchema);
 export default Product;

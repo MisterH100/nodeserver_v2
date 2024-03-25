@@ -1,20 +1,24 @@
 import express from "express";
 import {
-  getProduct,
-  getProducts,
+  getProductById,
+  getAllProducts,
+  getProductsByCategory,
   newProduct,
-  newProducts,
+  newProductList,
   searchProducts,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
-router.post("/product", newProduct);
 
-router.post("/product/list", newProducts);
+router.post("/products/new", newProduct);
 
-router.get("/products", getProducts);
+router.post("/products/new/list", newProductList);
 
-router.get("/products/product/:id", getProduct);
+router.get("/products/all", getAllProducts);
+
+router.get("/products/:id", getProductById);
+
+router.get("/products/category/:category", getProductsByCategory);
 
 router.get("/products/search/:query", searchProducts);
 

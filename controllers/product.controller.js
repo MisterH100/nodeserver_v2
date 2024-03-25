@@ -9,19 +9,22 @@ export const newProduct = async (req, res) => {
       description: new_product.description,
       price: new_product.price,
       in_stock: new_product.in_stock,
-      categories: new_product.categories,
+      category: new_product.category,
+      tags: new_product.tags,
       images: new_product.images,
       createdAt: Date.now(),
     });
     const product = await newProduct.save();
-    res.send(product.name + " sent");
+    res.status(200).json({ message: "product created", product: product.name });
   } catch (error) {
-    res.send(error);
+    res
+      .status(500)
+      .json({ message: "failed to create product, internal server error" });
   }
 };
 
-export const newProducts = async (req, res) => {
-  const productList = ProductArray;
+export const newProductList = async (req, res) => {
+  const productList = req.body.productList;
   try {
     productList.map((prod) => {
       const newProduct = new Product({
@@ -30,36 +33,58 @@ export const newProducts = async (req, res) => {
         description: prod.description,
         price: prod.price,
         in_stock: prod.in_stock,
-        categories: prod.categories,
+        category: prod.category,
+        tags: prod.tags,
         images: prod.images,
         createdAt: Date.now(),
       });
       newProduct.save();
     });
-    res.send("sent");
+    res
+      .status(200)
+      .json({ message: "products created", products: productList.length });
   } catch (error) {
-    res.send(error);
+    res
+      .status(500)
+      .json({ message: "failed to create products, internal server error" });
   }
 };
 
-export const getProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
   try {
     Product.find().then((product) => {
       res.send(product);
     });
   } catch (error) {
-    res.send(error);
+    res
+      .status(500)
+      .json({ message: "failed to get products, internal server error" });
   }
 };
 
-export const getProduct = async (req, res) => {
+export const getProductsByCategory = async (req, res) => {
+  const category = req.params.category;
+  try {
+    Product.find({ category: category }).then((product) => {
+      res.send(product);
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "failed to get products, internal server error" });
+  }
+};
+
+export const getProductById = async (req, res) => {
   const productId = req.params.id;
   try {
     Product.findById(productId).then((product) => {
       res.send(product);
     });
   } catch (error) {
-    res.send(error);
+    res
+      .status(500)
+      .json({ message: "failed to get product, internal server error" });
   }
 };
 
@@ -70,6 +95,8 @@ export const searchProducts = async (req, res) => {
       res.send(searchedProducts);
     });
   } catch (err) {
-    res.send(err);
+    res
+      .status(500)
+      .json({ message: "failed to search products, internal server error" });
   }
 };
