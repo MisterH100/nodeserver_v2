@@ -40,8 +40,10 @@ export const newOrder = async (req, res) => {
         " Your order with order number: " +
         orderNumber +
         " has been received",
-      html: `<h1>Order received</h1><br/>
-                  <h3>external wear sa</h3>
+      html: `<h1>External wear sa</h1><br/>
+                  <h3>Order received, Date: ${new Date(
+                    orderDate
+                  ).toLocaleDateString()} </h3>
                   <p>Order Number: ${orderNumber}</p>
                   <p>Your order has been received, Your product will be delivered to you within 3 working days,for more information on our delivery terms and conditions, click this <a href="https://productshop-official.vercel.app/learn-more/deliveries" >link</a> </p>
                   <h3>What is to be expected in your package</h3>
@@ -49,12 +51,18 @@ export const newOrder = async (req, res) => {
                     ${req.body.products.map(
                       (
                         product
-                      ) => `<img src=${product.images[0]} alt=${product.name} width="80" height="100" /> <p>${product.name}</p><br/>
+                      ) => `<div><img src=${product.images[0]} alt=${product.name} width="80" height="100" /> <p>${product.name}</p></div>
                       `
                     )}
                   </div>
                   <p>Payment method: ${req.body.payment_method}</p>
                   <p>Total: R ${req.body.price}</p>
+                  <footer>
+                    <p>Thank you for shopping with external wear sa</p>
+                    <p>For more information on our delivery terms and conditions, click this <a href="https://productshop-official.vercel.app/learn-more/deliveries" >link</a> </p>
+                    <p>For more information on our privacy policy, click this <a href="https://productshop-official.vercel.app/learn-more/privacy-policy" >link</a>
+                    <a href="mailto:thandsomedevservices@gmail.com">contact</a>
+                  </footer>
                   `,
     };
     sgMail
@@ -73,14 +81,15 @@ export const newOrder = async (req, res) => {
       from: process.env.FROM_EMAIL,
       subject: "External wear sa new order",
       text: "A new order has been placed with order number: " + orderNumber,
-      html: `<h1>New order</h1>
-              <p> A new order has been placed</p>
+      html: `<h1>External wear sa</h1>
+              <h3>New order, Date: ${new Date(
+                orderDate
+              ).toLocaleDateString()}</h3>
               <p>Order number: ${orderNumber}</p>
-              <p>Full name: ${req.body.first_name} " " ${req.body.last_name} </p>
+              <p>Full name: ${req.body.first_name} ${req.body.last_name} </p>
               <p>Email: ${req.body.email}</p>
               <p>Phone: ${req.body.phone}</p>
               <p>Address: ${req.body.address}</p>
-              
               `,
     };
     sgMail
