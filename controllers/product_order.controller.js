@@ -35,21 +35,26 @@ export const newOrder = async (req, res) => {
       from: process.env.FROM_EMAIL,
       subject: "Order Confirmation",
       text:
-        "ProductStore Hi " +
+        "Hi " +
         req.body.first_name +
-        " Your order: " +
+        " Your order with order number: " +
         orderNumber +
-        " has been received and processed, our agent will be in touch with you shortly",
+        " has been received",
       html: `<h1>Order received</h1><br/>
                   <h3>external wear sa</h3>
                   <p>Order Number: ${orderNumber}</p>
-                  <p>Your order has been received and processed, our agent will be in touch with you shortly</p>
+                  <p>Your order has been received, Your product will be delivered to you within 3 working days,for more information on our delivery terms and conditions, click this <a href="https://productshop-official.vercel.app/learn-more/deliveries" >link</a> </p>
+                  <h3>What is to be expected in your package</h3>
                   <div>
                     ${req.body.products.map(
-                      (product) => `<p>${product.name}</p><br/>`
+                      (
+                        product
+                      ) => `<img src=${product.images[0]} alt=${product.name} width="80" height="100" /> <p>${product.name}</p><br/>
+                      `
                     )}
                   </div>
-                  <p>R ${req.body.price}</p>
+                  <p>Payment method: ${req.body.payment_method}</p>
+                  <p>Total: R ${req.body.price}</p>
                   `,
     };
     sgMail
@@ -66,13 +71,17 @@ export const newOrder = async (req, res) => {
     const notification = {
       to: process.env.TO_EMAIL,
       from: process.env.FROM_EMAIL,
-      subject: "New order",
-      text:
-        "ProductStore A new order has been placed with order number: " +
-        orderNumber,
-      html: `<h1>New order</h1> <br/> 
-              <h3>external wear sa</h3>
-              <p> A new order has been placed with order number: ${orderNumber}</p> <br/>`,
+      subject: "External wear sa new order",
+      text: "A new order has been placed with order number: " + orderNumber,
+      html: `<h1>New order</h1>
+              <p> A new order has been placed</p>
+              <p>Order number: ${orderNumber}</p>
+              <p>Full name: ${req.body.first_name} " " ${req.body.last_name} </p>
+              <p>Email: ${req.body.email}</p>
+              <p>Phone: ${req.body.phone}</p>
+              <p>Address: ${req.body.address}</p>
+              
+              `,
     };
     sgMail
       .send(notification)
