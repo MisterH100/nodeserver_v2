@@ -40,7 +40,7 @@ export const newOrder = async (req, res) => {
         " Your order with order number: " +
         orderNumber +
         " has been received",
-      html: `<h1>External wear sa</h1><br/>
+      html: `<h1>External wear sa</h1>
                   <h3>Order received, Date: ${new Date(
                     orderDate
                   ).toLocaleDateString()} </h3>
@@ -49,9 +49,10 @@ export const newOrder = async (req, res) => {
                   <h3>What is to be expected in your package</h3>
                   <div>
                     ${req.body.products.map(
-                      (
-                        product
-                      ) => `<div><img src=${product.images[0]} alt=${product.name} width="80" height="100" /> <p>${product.name}</p></div>
+                      (product) => `<div>
+                        <img src=${product.images[0]} alt=${product.name} width="80" height="100" /> 
+                        <p>${product.name}</p>
+                        </div>
                       `
                     )}
                   </div>
@@ -61,7 +62,7 @@ export const newOrder = async (req, res) => {
                     <p>Thank you for shopping with external wear sa</p>
                     <p>For more information on our delivery terms and conditions, click this <a href="https://productshop-official.vercel.app/learn-more/deliveries" >link</a> </p>
                     <p>For more information on our privacy policy, click this <a href="https://productshop-official.vercel.app/learn-more/privacy-policy" >link</a>
-                    <a href="mailto:thandsomedevservices@gmail.com">contact</a>
+                    <p><a href="mailto:thandsomedevservices@gmail.com">contact</a></p>
                   </footer>
                   `,
     };
@@ -88,7 +89,7 @@ export const newOrder = async (req, res) => {
               <p>Order number: ${orderNumber}</p>
               <p>Full name: ${req.body.first_name} ${req.body.last_name} </p>
               <p>Email: ${req.body.email}</p>
-              <p>Phone: ${req.body.phone}</p>
+              <p>Phone: +27${req.body.phone}</p>
               <p>Address: ${req.body.address}</p>
               `,
     };
