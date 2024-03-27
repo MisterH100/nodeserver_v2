@@ -48,7 +48,7 @@ export const newOrder = async (req, res) => {
                     orderDate
                   ).toLocaleDateString()} </h3>
                   <p>Order Number: ${orderNumber}</p>
-                  <p>Your order has been received, Your product will be delivered to you within 3 working days,for more information on our delivery terms and conditions, click this <a href="https://productshop-official.vercel.app/learn-more/deliveries" >link</a> </p>
+                  <p>Your order has been received, Your product will be delivered to you within 3 working days,for more information on our delivery terms and conditions, click this <a href="https://externalwearsa.vercel.app/learn-more/deliveries" >link</a> </p>
                   <h3>What is to be expected in your package</h3>
                   <div>
                     ${req.body.products.map(
@@ -64,8 +64,8 @@ export const newOrder = async (req, res) => {
                   <p>Total: R ${req.body.price}</p>
                   <footer>
                     <p>Thank you for shopping with external wear sa</p>
-                    <p>For more information on our delivery terms and conditions, click this <a href="https://productshop-official.vercel.app/learn-more/deliveries" >link</a> </p>
-                    <p>For more information on our privacy policy, click this <a href="https://productshop-official.vercel.app/learn-more/privacy-policy" >link</a>
+                    <p>For more information on our delivery terms and conditions, click this <a href="https://externalwearsa.vercel.app/learn-more/deliveries" >link</a> </p>
+                    <p>For more information on our privacy policy, click this <a href="https://externalwearsa.vercel.app/learn-more/privacy-policy" >link</a>
                     <p><a href="mailto:thandsomedevservices@gmail.com">contact</a></p>
                   </footer>
                   `,
