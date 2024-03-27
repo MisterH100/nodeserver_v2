@@ -103,6 +103,9 @@ export const LoginUser = async (req, res) => {
       }
       if (validatePassword) {
         const token = await generateJWTToken(user._id);
+        await User.findByIdAndUpdate(user._id, {
+          $set: { logged_in: true },
+        });
         const { password, ...details } = user._doc;
         res
           .status(200)
@@ -163,6 +166,9 @@ export const authUser = async (req, res) => {
     if (!user) {
       res.status(400).json({ message: "user does not exist" });
     } else {
+      await User.findByIdAndUpdate(user._id, {
+        $set: { logged_in: true },
+      });
       const { password, ...details } = user._doc;
       res
         .status(200)
@@ -175,8 +181,12 @@ export const authUser = async (req, res) => {
   }
 };
 
-export const LogoutUser = (req, res) => {
+export const LogoutUser = async (req, res) => {
+  const userID = req.body.userID;
   try {
+    await User.findByIdAndUpdate(userID, {
+      $set: { logged_in: false },
+    });
     res.status(200).json({ message: "logged out successfully" });
   } catch (error) {
     res

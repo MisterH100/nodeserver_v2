@@ -54,8 +54,11 @@ export const newOrder = async (req, res) => {
                     ${req.body.products.map(
                       (product) => `
                         <div>
-                        <img src=${product.images[0]} alt=${product.name} width="80" height="100" /> 
-                        <p>${product.name}</p>
+                        <img src=${product.images[0]} alt=${
+                        product.name
+                      } width="80" height="100" /> 
+                        <p>${product.name} 
+                        ${product.refurbished && "refurbished"}</p>
                         </div>
                       `
                     )}

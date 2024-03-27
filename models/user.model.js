@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    logged_in: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

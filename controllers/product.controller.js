@@ -8,6 +8,7 @@ export const newProduct = async (req, res) => {
       brand: new_product.brand,
       description: new_product.description,
       price: new_product.price,
+      refurbished_price: new_product.refurbished_price,
       in_stock: new_product.in_stock,
       category: new_product.category,
       tags: new_product.tags,
@@ -32,6 +33,7 @@ export const newProductList = async (req, res) => {
         brand: prod.brand,
         description: prod.description,
         price: prod.price,
+        refurbished_price: prod.refurbished_price,
         in_stock: prod.in_stock,
         category: prod.category,
         tags: prod.tags,
@@ -66,6 +68,19 @@ export const getProductsByCategory = async (req, res) => {
   const category = req.params.category;
   try {
     Product.find({ category: category }).then((product) => {
+      res.send(product);
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "failed to get products, internal server error" });
+  }
+};
+
+export const getProductsByTags = async (req, res) => {
+  const tagsArr = req.body.tags_array;
+  try {
+    Product.find({ tags: { $in: tagsArr } }).then((product) => {
       res.send(product);
     });
   } catch (error) {

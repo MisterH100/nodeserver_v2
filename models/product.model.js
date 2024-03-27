@@ -16,6 +16,10 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  refurbished_price: {
+    type: Number,
+    default: 0,
+  },
   in_stock: {
     type: Number,
     default: 0,
@@ -23,6 +27,10 @@ const ProductSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     default: 0,
+  },
+  refurbished: {
+    type: Boolean,
+    default: false,
   },
   category: {
     type: String,

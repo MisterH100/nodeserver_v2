@@ -3,6 +3,7 @@ import {
   getProductById,
   getAllProducts,
   getProductsByCategory,
+  getProductsByTags,
   newProduct,
   newProductList,
   searchProducts,
@@ -19,6 +20,8 @@ router.get("/products/all", getAllProducts);
 router.get("/products/id/:id", getProductById);
 
 router.get("/products/category/:category", getProductsByCategory);
+
+router.get("/products/tags", getProductsByTags);
 
 router.get("/products/search/:query", searchProducts);
 
