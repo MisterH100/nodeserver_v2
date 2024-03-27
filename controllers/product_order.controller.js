@@ -95,6 +95,19 @@ export const newOrder = async (req, res) => {
               <p>Email: ${req.body.email}</p>
               <p>Phone: +27${req.body.phone}</p>
               <p>Address: ${req.body.address}</p>
+              <h3>Items ordered<h3>
+              <div>
+              ${req.body.products.map(
+                (product) => `
+                  <div>
+                  <img src=${product.images[0]} alt=${product.name} width="80" height="100" /> 
+                  <p>${product.name}. refurbished: ${product.refurbished}</p>
+                  </div>
+                `
+              )}
+            </div>
+            <p>Payment method: ${req.body.payment_method}</p>
+            <p>Total: R ${req.body.price}</p>
               `,
     };
     sgMail
