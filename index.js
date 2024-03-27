@@ -11,7 +11,6 @@ import activityRoute from "./routes/activity.route.js";
 
 dotenv.config();
 const app = express();
-const origins = process.env.ORIGINS.split(",");
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

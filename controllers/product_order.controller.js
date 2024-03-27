@@ -41,6 +41,9 @@ export const newOrder = async (req, res) => {
         orderNumber +
         " has been received",
       html: `<h1>External wear sa</h1>
+                  <div>
+                  <img src="https://res.cloudinary.com/dxrpjdomo/image/upload/v1711540298/Products/assets/externalwearbanner_hcq2bh.png" alt="external wear sa" width="800" height="300" />
+                  </div>
                   <h3>Order received, Date: ${new Date(
                     orderDate
                   ).toLocaleDateString()} </h3>
@@ -49,7 +52,8 @@ export const newOrder = async (req, res) => {
                   <h3>What is to be expected in your package</h3>
                   <div>
                     ${req.body.products.map(
-                      (product) => `<div>
+                      (product) => `
+                        <div>
                         <img src=${product.images[0]} alt=${product.name} width="80" height="100" /> 
                         <p>${product.name}</p>
                         </div>
