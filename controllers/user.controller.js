@@ -182,7 +182,7 @@ export const authUser = async (req, res) => {
 };
 
 export const LogoutUser = async (req, res) => {
-  const userID = req.body.userID;
+  const userID = req.user._id;
   try {
     await User.findByIdAndUpdate(userID, {
       $set: { logged_in: false },
