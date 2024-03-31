@@ -54,9 +54,11 @@ export const newProductList = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    Product.find().then((product) => {
-      res.send(product);
-    });
+    Product.find()
+      .sort({ createdAt: "descending" })
+      .then((product) => {
+        res.send(product);
+      });
   } catch (error) {
     res
       .status(500)
@@ -67,9 +69,11 @@ export const getAllProducts = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
   const category = req.params.category;
   try {
-    Product.find({ category: category }).then((product) => {
-      res.send(product);
-    });
+    Product.find({ category: category })
+      .sort({ createdAt: "descending" })
+      .then((product) => {
+        res.send(product);
+      });
   } catch (error) {
     res
       .status(500)
@@ -80,9 +84,11 @@ export const getProductsByCategory = async (req, res) => {
 export const getProductsByTags = async (req, res) => {
   const tagsArr = req.body.tags_array;
   try {
-    Product.find({ tags: { $in: tagsArr } }).then((product) => {
-      res.send(product);
-    });
+    Product.find({ tags: { $in: tagsArr } })
+      .sort({ createdAt: "descending" })
+      .then((product) => {
+        res.send(product);
+      });
   } catch (error) {
     res
       .status(500)
@@ -106,9 +112,11 @@ export const getProductById = async (req, res) => {
 export const searchProducts = async (req, res) => {
   const query = req.params.query;
   try {
-    Product.find({ $text: { $search: query } }).then((searchedProducts) => {
-      res.send(searchedProducts);
-    });
+    Product.find({ $text: { $search: query } })
+      .sort({ createdAt: "descending" })
+      .then((searchedProducts) => {
+        res.send(searchedProducts);
+      });
   } catch (err) {
     res
       .status(500)

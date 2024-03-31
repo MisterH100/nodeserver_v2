@@ -184,9 +184,12 @@ export const authUser = async (req, res) => {
 export const LogoutUser = async (req, res) => {
   const userID = req.user._id;
   try {
-    await User.findByIdAndUpdate(userID, {
-      $set: { logged_in: false },
-    });
+    await User.updateOne(
+      { _id: userID },
+      {
+        $set: { logged_in: false },
+      }
+    );
     res.status(200).json({ message: "logged out successfully" });
   } catch (error) {
     res

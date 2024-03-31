@@ -16,6 +16,7 @@
     "mongoose": "^7.4.3",
     "nodemon": "^3.1.0",
     "order-id": "^2.1.2",
+    "stripe": "^14.23.0",
     "unique-username-generator": "^1.2.0"
   }
 }
