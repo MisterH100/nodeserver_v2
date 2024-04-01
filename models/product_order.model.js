@@ -43,6 +43,11 @@ const productOrdersSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
+    order_status: {
+      type: String,
+      enum: ["pending", "collected", "completed", "cancelled", "delayed"],
+      default: "pending",
+    },
   },
   { timestamps: true }
 );

@@ -8,6 +8,7 @@ import homeRoute from "./routes/home.route.js";
 import productOrderRoute from "./routes/product_order.route.js";
 import userRoute from "./routes/user.route.js";
 import activityRoute from "./routes/activity.route.js";
+import statsRoute from "./routes/stats.route.js";
 import paymentRoute from "./routes/payment.route.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use("/api", productOrderRoute);
 app.use("/api", userRoute);
 app.use("/api", activityRoute);
 app.use("/api", paymentRoute);
+app.use("/api", statsRoute);
 
 app.listen(process.env.PORT || 5000, () => {
   connectToDatabase();

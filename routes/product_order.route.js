@@ -5,6 +5,7 @@ import {
   getOrdersByEmail,
   newOrder,
   getOrderByNumber,
+  updateOrderStatus,
 } from "../controllers/product_order.controller.js";
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.get("/products/orders/number/:order_number", getOrderByNumber);
 router.get("/products/orders/email/:email", getOrdersByEmail);
 
 router.get("/products/orders/id/:id", getOrdersByCustomerId);
+
+router.post("/products/orders/status/:order_number", updateOrderStatus);
 
 export default router;

@@ -173,3 +173,20 @@ export const getOrdersByCustomerId = async (req, res) => {
     res.send(error);
   }
 };
+
+export const updateOrderStatus = async (req, res) => {
+  const order_number = req.params.order_number;
+  const order_status = req.body.orderStatus;
+  try {
+    await ProductOrder.findOneAndUpdate(
+      { order_number: order_number },
+      { order_status: order_status }
+    );
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+    });
+  } catch (error) {
+    res.send(error);
+  }
+};
