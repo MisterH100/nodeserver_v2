@@ -1,3 +1,4 @@
+import connectToRedis from "../db/connectToRedis.js";
 import Product from "../models/product.model.js";
 
 export const newProduct = async (req, res) => {
@@ -54,11 +55,18 @@ export const newProductList = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    Product.find()
-      .sort({ createdAt: "descending" })
-      .then((product) => {
-        res.send(product);
-      });
+    const redis = await connectToRedis();
+    const products = await redis.get("products");
+    if (products) {
+      res.status(200).send(JSON.parse(products));
+    } else {
+      Product.find()
+        .sort({ createdAt: "descending" })
+        .then((product) => {
+          res.send(product);
+          redis.set("products", JSON.stringify(product), { EX: 120 });
+        });
+    }
   } catch (error) {
     res
       .status(500)
@@ -69,11 +77,18 @@ export const getAllProducts = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
   const category = req.params.category;
   try {
-    Product.find({ category: category })
-      .sort({ createdAt: "descending" })
-      .then((product) => {
-        res.send(product);
-      });
+    const redis = await connectToRedis();
+    const cat_products = await redis.get(category);
+    if (cat_products) {
+      res.status(200).send(JSON.parse(cat_products));
+    } else {
+      Product.find({ category: category })
+        .sort({ createdAt: "descending" })
+        .then((product) => {
+          res.send(product);
+          redis.set(category, JSON.stringify(product), { EX: 120 });
+        });
+    }
   } catch (error) {
     res
       .status(500)
@@ -99,9 +114,17 @@ export const getProductsByTags = async (req, res) => {
 export const getProductById = async (req, res) => {
   const productId = req.params.id;
   try {
-    Product.findById(productId).then((product) => {
-      res.send(product);
-    });
+    const redis = await connectToRedis();
+    const product = await redis.get(productId);
+
+    if (product) {
+      res.status(200).send(JSON.parse(product));
+    } else {
+      Product.findById(productId).then((product) => {
+        res.send(product);
+        redis.set(productId, JSON.stringify(product), { EX: 120 });
+      });
+    }
   } catch (error) {
     res
       .status(500)
@@ -112,11 +135,18 @@ export const getProductById = async (req, res) => {
 export const searchProducts = async (req, res) => {
   const query = req.params.query;
   try {
-    Product.find({ $text: { $search: query } })
-      .sort({ createdAt: "descending" })
-      .then((searchedProducts) => {
-        res.send(searchedProducts);
-      });
+    const redis = await connectToRedis();
+    const search_results = await redis.get(query);
+    if (search_results) {
+      res.status(200).send(JSON.parse(search_results));
+    } else {
+      Product.find({ $text: { $search: query } })
+        .sort({ createdAt: "descending" })
+        .then((searchedProducts) => {
+          res.send(searchedProducts);
+          redis.set(query, JSON.stringify(searchedProducts), { EX: 60 });
+        });
+    }
   } catch (err) {
     res
       .status(500)
