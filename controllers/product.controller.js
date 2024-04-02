@@ -54,49 +54,53 @@ export const newProductList = async (req, res) => {
 };
 
 export const getAllProducts = async (req, res) => {
+  const redis = await connectToRedis();
   try {
-    const redis = await connectToRedis();
     const allProducts = await redis.get("allProducts");
 
     if (allProducts) {
       res.status(200).send(JSON.parse(allProducts));
+      redis.quit();
     } else {
       Product.find()
         .sort({ createdAt: "descending" })
         .then((product) => {
           res.send(product);
           redis.set("allProducts", JSON.stringify(product), { EX: 120 });
+          redis.quit();
         });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "failed to get all products, internal server error" });
+    res.status(500).json({
+      message: "failed to get all products, internal server error",
+      error: error,
+    });
   }
 };
 
 export const getProductsByCategory = async (req, res) => {
   const category = req.params.category;
+  const redis = await connectToRedis();
   try {
-    const redis = await connectToRedis();
     const cat_products = await redis.get(category);
 
     if (cat_products) {
       res.status(200).send(JSON.parse(cat_products));
+      redis.quit();
     } else {
       Product.find({ category: category })
         .sort({ createdAt: "descending" })
         .then((product) => {
           res.send(product);
           redis.set(category, JSON.stringify(product), { EX: 120 });
+          redis.quit();
         });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "failed to get products by category, internal server error",
-      });
+    res.status(500).json({
+      message: "failed to get products by category, internal server error",
+      error: error,
+    });
   }
 };
 
@@ -109,56 +113,59 @@ export const getProductsByTags = async (req, res) => {
         res.send(product);
       });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "failed to get products by tags, internal server error",
-      });
+    res.status(500).json({
+      message: "failed to get products by tags, internal server error",
+      error: error,
+    });
   }
 };
 
 export const getProductById = async (req, res) => {
   const productId = req.params.id;
+  const redis = await connectToRedis();
   try {
-    const redis = await connectToRedis();
     const product = await redis.get(productId);
 
     if (product) {
       res.status(200).send(JSON.parse(product));
+      redis.quit();
     } else {
       Product.findById(productId).then((product) => {
         res.send(product);
         redis.set(productId, JSON.stringify(product), { EX: 120 });
+        redis.quit();
       });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "failed to get product by id, internal server error" });
+    res.status(500).json({
+      message: "failed to get product by id, internal server error",
+      error: error,
+    });
   }
 };
 
 export const searchProducts = async (req, res) => {
   const query = req.params.query;
+  const redis = await connectToRedis();
   try {
-    const redis = await connectToRedis();
     const search_results = await redis.get(query);
 
     if (search_results) {
       res.status(200).send(JSON.parse(search_results));
+      redis.quit();
     } else {
       Product.find({ $text: { $search: query } })
         .sort({ createdAt: "descending" })
         .then((searchedProducts) => {
           res.send(searchedProducts);
           redis.set(query, JSON.stringify(searchedProducts), { EX: 60 });
+          redis.quit();
         });
     }
-  } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "failed to search products by query , internal server error",
-      });
+  } catch (error) {
+    res.status(500).json({
+      message: "failed to search products by query, internal server error",
+      error: error,
+    });
   }
 };
