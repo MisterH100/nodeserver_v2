@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
 import ProductOrder from "../models/product_order.model.js";
+import GraphData from "../models/graph.model.js";
 
 export const getStats = async (req, res) => {
   try {
@@ -29,11 +30,25 @@ export const getStats = async (req, res) => {
 
 export const getOrders = async (req, res) => {
   try {
-    const orders = await ProductOrder.find({});
+    const orders = await ProductOrder.find({}).sort({
+      createdAt: "descending",
+    });
     res.status(200).json({ orders: orders });
   } catch (error) {
     res.status(500).json({
       message: "failed to get orders",
+      error: error,
+    });
+  }
+};
+
+export const getGraphData = async (req, res) => {
+  try {
+    const graph_data = await GraphData.find({});
+    res.status(200).json({ graphData: graph_data });
+  } catch (error) {
+    res.status(500).json({
+      message: "failed to get graph data",
       error: error,
     });
   }

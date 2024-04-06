@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import schedule from "node-schedule";
 import connectToDatabase from "./db/connectToDatabase.js";
 import productRoute from "./routes/product.route.js";
 import homeRoute from "./routes/home.route.js";
@@ -10,6 +11,7 @@ import userRoute from "./routes/user.route.js";
 import activityRoute from "./routes/activity.route.js";
 import statsRoute from "./routes/stats.route.js";
 import paymentRoute from "./routes/payment.route.js";
+import { updateGraphData } from "./lib/dataUpdate.js";
 
 dotenv.config();
 const app = express();
@@ -28,4 +30,7 @@ app.use("/api", statsRoute);
 app.listen(process.env.PORT || 5000, () => {
   connectToDatabase();
   console.log(`listening on port ${process.env.PORT || 5000}`);
+  schedule.scheduleJob("0 0 28 * *", () => {
+    updateGraphData();
+  });
 });
