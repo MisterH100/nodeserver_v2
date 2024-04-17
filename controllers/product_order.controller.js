@@ -40,20 +40,20 @@ export const newOrder = async (req, res) => {
         " Your order with order number: " +
         orderNumber +
         " has been received",
-      html: `<h1>External wear sa</h1>
+      html: `<h1  style="text-align:center;width:100%;">External wear sa</h1>
                   <div>
                   <img src="https://res.cloudinary.com/dxrpjdomo/image/upload/v1711540298/Products/assets/externalwearbanner_hcq2bh.png" alt="external wear sa" width="800" height="300" />
                   </div>
-                  <h3>Order received, Date: ${new Date(
+                  <h3>Order received on Date: ${new Date(
                     orderDate
                   ).toLocaleDateString()} </h3>
                   <p>Order Number: ${orderNumber}</p>
                   <p>Your order has been received, Your product will be delivered to you within 3 working days,for more information on our delivery terms and conditions, click this <a href="https://externalwearsa.vercel.app/learn-more/deliveries" >link</a> </p>
                   <h3>What is to be expected in your package</h3>
-                  <div>
+                  <div style="width:100%;display:flex;justify-content:center;flex-wrap:wrap;border:2px solid white;">
                     ${req.body.products.map(
                       (product) => `
-                        <div>
+                        <div style="padding-right:4px;">
                         <img src=${product.images[0]} alt=${product.name} width="80" height="100" /> 
                         <p>${product.name}</p>
                         </div>
@@ -65,8 +65,8 @@ export const newOrder = async (req, res) => {
                   <footer>
                     <p>Thank you for shopping with external wear sa</p>
                     <p>For more information on our delivery terms and conditions, click this <a href="https://externalwearsa.vercel.app/learn-more/deliveries" >link</a> </p>
-                    <p>For more information on our privacy policy, click this <a href="https://externalwearsa.vercel.app/learn-more/privacy-policy" >link</a>
-                    <p><a href="mailto:thandsomedevservices@gmail.com">contact</a></p>
+                    <p>For more information on our privacy policy, click this link<a href="https://externalwearsa.vercel.app/learn-more/privacy-policy" >learn more</a>
+                    <p><a href="externalwear.co.za/support" style="text-align:center;">contact externalwear</a></p>
                   </footer>
                   `,
     };
@@ -101,7 +101,7 @@ export const newOrder = async (req, res) => {
                 (product) => `
                   <div>
                   <img src=${product.images[0]} alt=${product.name} width="80" height="100" /> 
-                  <p>${product.name}. refurbished: ${product.refurbished}</p>
+                  <p>${product.name}. 
                   </div>
                 `
               )}

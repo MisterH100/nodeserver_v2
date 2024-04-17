@@ -13,8 +13,8 @@ import statsRoute from "./routes/stats.route.js";
 import paymentRoute from "./routes/payment.route.js";
 import { updateGraphData } from "./lib/dataUpdate.js";
 
-dotenv.config();
 const app = express();
+dotenv.config();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

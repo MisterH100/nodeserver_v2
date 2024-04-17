@@ -1,4 +1,4 @@
-import connectToRedis from "../db/connectToRedis.js";
+import connectToRedis from "../redis/connectToRedis.js";
 import Product from "../models/product.model.js";
 
 export const newProduct = async (req, res) => {
