@@ -8,10 +8,17 @@ import {
   newProductList,
   searchProducts,
 } from "../controllers/product.controller.js";
-
+import { uploadImagesToCloudinary } from "../middleware/uploadImageToCloudinary.js";
+import multer from "multer";
+const upload = multer({ dest: "uploads/" });
 const router = express.Router();
 
-router.post("/products/new", newProduct);
+router.post(
+  "/products/new",
+  upload.array("files"),
+  uploadImagesToCloudinary,
+  newProduct
+);
 
 router.post("/products/new/list", newProductList);
 

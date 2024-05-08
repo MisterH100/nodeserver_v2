@@ -3,6 +3,7 @@ import Product from "../models/product.model.js";
 
 export const newProduct = async (req, res) => {
   const new_product = req.body;
+
   try {
     const newProduct = new Product({
       name: new_product.name,
@@ -13,7 +14,7 @@ export const newProduct = async (req, res) => {
       in_stock: new_product.in_stock,
       category: new_product.category,
       tags: new_product.tags,
-      images: new_product.images,
+      images: req.images,
       createdAt: Date.now(),
     });
     const product = await newProduct.save();
